@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://b5xppvpvg5ww"]
+
+[ext_resource type="Texture2D" uid="uid://bfaev55rg1bvn" path="res://icon.svg" id="1_lu6pp"]
+[ext_resource type="Script" uid="uid://b8f64wwcqdogn" path="res://pointer.gd" id="1_p82c6"]
+
+[node name="Pointer" type="Node2D"]
+script = ExtResource("1_p82c6")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_lu6pp")
+
+[node name="StopTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="LoopTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="StopTimer" to="." method="_on_stop_timer_timeout"]
