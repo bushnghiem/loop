@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://yb7otyw23ud7"]
+
+[ext_resource type="Script" uid="uid://3vkb85pe5y48" path="res://detector.gd" id="1_btphw"]
+[ext_resource type="Texture2D" uid="uid://bfaev55rg1bvn" path="res://icon.svg" id="1_kiji7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8tf4g"]
+radius = 36.0555
+
+[node name="Detector" type="Node2D"]
+script = ExtResource("1_btphw")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_kiji7")
+
+[node name="DetectorArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectorArea"]
+shape = SubResource("CircleShape2D_8tf4g")
+
+[connection signal="area_entered" from="DetectorArea" to="." method="_on_area_2d_area_entered"]

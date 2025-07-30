@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://ck6pklxxsccjd"]
+
+[ext_resource type="Script" uid="uid://bfltqqi1yfvn7" path="res://beacon.gd" id="1_1kq3a"]
+[ext_resource type="Texture2D" uid="uid://bfaev55rg1bvn" path="res://icon.svg" id="1_vstb5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1kq3a"]
+radius = 34.0588
+
+[node name="Beacon" type="Node2D"]
+script = ExtResource("1_1kq3a")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0, 1, 0, 1)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_vstb5")
+
+[node name="BeaconArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BeaconArea"]
+shape = SubResource("CircleShape2D_1kq3a")
+
+[connection signal="area_entered" from="BeaconArea" to="." method="_on_area_2d_area_entered"]
+[connection signal="area_exited" from="BeaconArea" to="." method="_on_area_2d_area_exited"]

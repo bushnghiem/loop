@@ -1,7 +1,28 @@
-[gd_scene load_steps=2 format=3 uid="uid://dj0urxok8lh5r"]
+[gd_scene load_steps=5 format=3 uid="uid://dj0urxok8lh5r"]
 
 [ext_resource type="PackedScene" uid="uid://b5xppvpvg5ww" path="res://pointer.tscn" id="1_0f027"]
+[ext_resource type="Script" uid="uid://bj5uakwxosvv0" path="res://main_scene.gd" id="1_gyfs4"]
+[ext_resource type="PackedScene" uid="uid://ck6pklxxsccjd" path="res://beacon.tscn" id="3_d5x1h"]
+[ext_resource type="PackedScene" uid="uid://yb7otyw23ud7" path="res://detector.tscn" id="4_d5x1h"]
 
 [node name="MainScene" type="Node2D"]
+script = ExtResource("1_gyfs4")
 
 [node name="Pointer" parent="." instance=ExtResource("1_0f027")]
+position = Vector2(2259, -252)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Beacon" parent="." instance=ExtResource("3_d5x1h")]
+
+[node name="CWDetector" parent="." instance=ExtResource("4_d5x1h")]
+modulate = Color(1, 0, 1, 1)
+
+[node name="CCWDetector" parent="." instance=ExtResource("4_d5x1h")]
+modulate = Color(0, 0, 1, 1)
+
+[connection signal="loopstart" from="Pointer" to="." method="_on_pointer_loopstart"]
+[connection signal="player_enter" from="Beacon" to="." method="_on_beacon_player_enter"]
+[connection signal="player_leave" from="Beacon" to="." method="_on_beacon_player_leave"]
+[connection signal="touched" from="CWDetector" to="." method="_on_cw_detector_touched"]
+[connection signal="touched" from="CCWDetector" to="." method="_on_ccw_detector_touched"]
