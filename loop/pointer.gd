@@ -1,16 +1,22 @@
 extends Node2D
 @export var center : Vector2 = Vector2.ZERO
-@export var outRadius : float = 300
-@export var inRadius : float = 275
+@export var outRadius : float = 200
+@export var inRadius : float = 175
 @export var beacon : Node
+var stoplen : float = 1.0
 var prevPos : Vector2 = Vector2()
 var loopStart : float = 0.0
 var currAng : float = 0.0
 var stopped : bool = false
 var looped : bool =  false
+var ammo : int = 0
+var attackcd : float = 1.0
 signal loopstart(pos)
 
 func _process(delta: float) -> void:
+	if Input.is_action_pressed("primary"):
+		if ($AttackCD.is_stopped() and ammo >= 1):
+			attack()
 	if Input.is_action_pressed("secondary"):
 		start_looping()
 	
@@ -48,12 +54,19 @@ func _process(delta: float) -> void:
 			stopped = false
 			#print("moving")
 	elif ($StopTimer.is_stopped()):
-		$StopTimer.start(0.5)
+		$StopTimer.start(stoplen)
 		#print("start timer")
 	
 	prevPos = global_position
 	global_position = newPos
 
+func attack():
+	var inRange = $AttackRange.get_overlapping_areas()
+	for area in range(inRange.size()):
+		if (inRange[area].has_method("destroy")):
+			inRange[area].destroy()
+	$AttackCD.start(attackcd)
+	ammo -= 1
 
 func start_looping():
 	stopped = true
@@ -61,3 +74,12 @@ func start_looping():
 	looped = false
 	#print("stopped: loopStart is " + str(loopStart))
 	loopstart.emit(Vector2.from_angle(loopStart) * outRadius)
+
+
+func _on_main_scene_loop() -> void:
+	ammo += 1
+
+
+func _on_player_area_entered(area: Area2D) -> void:
+	if (area.is_in_group("enemy")):
+		print("hurt")

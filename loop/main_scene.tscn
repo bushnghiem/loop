@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://dj0urxok8lh5r"]
+[gd_scene load_steps=7 format=3 uid="uid://dj0urxok8lh5r"]
 
 [ext_resource type="PackedScene" uid="uid://b5xppvpvg5ww" path="res://pointer.tscn" id="1_0f027"]
 [ext_resource type="Script" uid="uid://bj5uakwxosvv0" path="res://main_scene.gd" id="1_gyfs4"]
 [ext_resource type="PackedScene" uid="uid://ck6pklxxsccjd" path="res://beacon.tscn" id="3_d5x1h"]
 [ext_resource type="PackedScene" uid="uid://yb7otyw23ud7" path="res://detector.tscn" id="4_d5x1h"]
+[ext_resource type="PackedScene" uid="uid://bxndktw7bpuoo" path="res://rock.tscn" id="5_8mm7a"]
+[ext_resource type="PackedScene" uid="uid://duyj3kwvocu5y" path="res://base.tscn" id="6_hq1ik"]
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_gyfs4")
@@ -14,13 +16,22 @@ position = Vector2(2259, -252)
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="Beacon" parent="." instance=ExtResource("3_d5x1h")]
+position = Vector2(-1009, -97)
 
 [node name="CWDetector" parent="." instance=ExtResource("4_d5x1h")]
 modulate = Color(1, 0, 1, 1)
+position = Vector2(-747, -403)
 
 [node name="CCWDetector" parent="." instance=ExtResource("4_d5x1h")]
 modulate = Color(0, 0, 1, 1)
+position = Vector2(-347, -542)
 
+[node name="Rock" parent="." instance=ExtResource("5_8mm7a")]
+position = Vector2(-201, -173)
+
+[node name="Base" parent="." instance=ExtResource("6_hq1ik")]
+
+[connection signal="loop" from="." to="Pointer" method="_on_main_scene_loop"]
 [connection signal="loopstart" from="Pointer" to="." method="_on_pointer_loopstart"]
 [connection signal="player_enter" from="Beacon" to="." method="_on_beacon_player_enter"]
 [connection signal="player_leave" from="Beacon" to="." method="_on_beacon_player_leave"]
