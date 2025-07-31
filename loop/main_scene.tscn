@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dj0urxok8lh5r"]
+[gd_scene load_steps=15 format=3 uid="uid://dj0urxok8lh5r"]
 
 [ext_resource type="PackedScene" uid="uid://b5xppvpvg5ww" path="res://pointer.tscn" id="1_0f027"]
 [ext_resource type="Script" uid="uid://bj5uakwxosvv0" path="res://main_scene.gd" id="1_gyfs4"]
@@ -7,12 +7,78 @@
 [ext_resource type="PackedScene" uid="uid://yb7otyw23ud7" path="res://detector.tscn" id="4_d5x1h"]
 [ext_resource type="PackedScene" uid="uid://bxndktw7bpuoo" path="res://rock.tscn" id="5_8mm7a"]
 [ext_resource type="PackedScene" uid="uid://duyj3kwvocu5y" path="res://base.tscn" id="6_hq1ik"]
+[ext_resource type="PackedScene" uid="uid://1m5a0cf8iaui" path="res://solar_flare.tscn" id="8_66tet"]
+[ext_resource type="PackedScene" uid="uid://cidabko4fveu5" path="res://anti_wave.tscn" id="9_7ycvg"]
 
 [sub_resource type="Curve2D" id="Curve2D_hq1ik"]
 _data = {
 "points": PackedVector2Array(0, 0, 0, -960, -960, 0, 0, 0, 960, 0, 0, -960, 0, 0, 0, 960, 960, 0, 0, 0, -960, 0, 0, 960, 0, 0, 0, 0, -960, 0)
 }
 point_count = 5
+
+[sub_resource type="Animation" id="Animation_66tet"]
+resource_name = "solar_flare"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SolarFlare:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(-3, -715), Vector2(-8, 680)]
+}
+
+[sub_resource type="Animation" id="Animation_7ycvg"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SolarFlare:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-3, -715)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AntiWave:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-8, -704)]
+}
+
+[sub_resource type="Animation" id="Animation_wr18j"]
+resource_name = "anti_wave"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AntiWave:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0333333, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(-8, -704), Vector2(-8, 681)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_7ycvg"]
+_data = {
+&"RESET": SubResource("Animation_7ycvg"),
+&"anti_wave": SubResource("Animation_wr18j"),
+&"solar_flare": SubResource("Animation_66tet")
+}
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_gyfs4")
@@ -25,15 +91,15 @@ position = Vector2(2259, -252)
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="Beacon" parent="." instance=ExtResource("3_d5x1h")]
-position = Vector2(-1009, -97)
+position = Vector2(-2158, 311)
 
 [node name="CWDetector" parent="." instance=ExtResource("4_d5x1h")]
 modulate = Color(1, 0, 1, 1)
-position = Vector2(-747, -403)
+position = Vector2(-2116, -393)
 
 [node name="CCWDetector" parent="." instance=ExtResource("4_d5x1h")]
 modulate = Color(0, 0, 1, 1)
-position = Vector2(-347, -542)
+position = Vector2(-2158, -641)
 
 [node name="Base" parent="." instance=ExtResource("6_hq1ik")]
 
@@ -48,8 +114,32 @@ rotation = -1.5708
 wait_time = 2.0
 autostart = true
 
+[node name="LoopCombo" type="Timer" parent="."]
+one_shot = true
+
+[node name="SolarTime" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[node name="SolarFlare" parent="." instance=ExtResource("8_66tet")]
+position = Vector2(-3, -715)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_7ycvg")
+}
+
+[node name="AntiWave" parent="." instance=ExtResource("9_7ycvg")]
+position = Vector2(-8, -704)
+
+[connection signal="anti_shield" from="." to="Pointer" method="_on_main_scene_anti_shield"]
+[connection signal="anti_shield" from="." to="Base" method="_on_main_scene_anti_shield"]
 [connection signal="antiloop" from="." to="Pointer" method="_on_main_scene_antiloop"]
 [connection signal="loop" from="." to="Pointer" method="_on_main_scene_loop"]
+[connection signal="no_shield" from="." to="Pointer" method="_on_main_scene_no_shield"]
+[connection signal="no_shield" from="." to="Base" method="_on_main_scene_no_shield"]
+[connection signal="shield" from="." to="Pointer" method="_on_main_scene_shield"]
+[connection signal="shield" from="." to="Base" method="_on_main_scene_shield"]
 [connection signal="loopstart" from="Pointer" to="." method="_on_pointer_loopstart"]
 [connection signal="stop_looping" from="Pointer" to="." method="_on_pointer_stop_looping"]
 [connection signal="player_enter" from="Beacon" to="." method="_on_beacon_player_enter"]
@@ -57,3 +147,5 @@ autostart = true
 [connection signal="touched" from="CWDetector" to="." method="_on_cw_detector_touched"]
 [connection signal="touched" from="CCWDetector" to="." method="_on_ccw_detector_touched"]
 [connection signal="timeout" from="MobSpawn" to="." method="_on_mob_spawn_timeout"]
+[connection signal="timeout" from="LoopCombo" to="." method="_on_loop_combo_timeout"]
+[connection signal="timeout" from="SolarTime" to="." method="_on_solar_time_timeout"]

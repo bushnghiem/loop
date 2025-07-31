@@ -20,6 +20,8 @@ config/icon="res://icon.svg"
 Player=""
 primaryable=""
 enemy=""
+solar=""
+antiwave=""
 
 [input]
 

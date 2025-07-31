@@ -13,18 +13,24 @@ var ammo : int = 0
 var anti_ammo : int = 0
 var attackcd : float = 0.5
 var beaconed : bool = false
+var beaconCD : float = 0.5
+var max_ammo : int = 10
+var shield : bool = false
+var anti_shield : bool = false
 
 signal loopstart(pos)
+signal full_charge
+signal anti_full
 signal stop_looping
 
 func _process(delta: float) -> void:
-	if Input.is_action_pressed("primary"):
+	if Input.is_action_pressed("primary") and !beaconed:
 		if ($AttackCD.is_stopped() and ammo >= 1):
 			attack()
-	if Input.is_action_pressed("secondary"):
+	if Input.is_action_pressed("secondary") and !beaconed:
 		if ($AttackCD.is_stopped() and anti_ammo >= 1):
 			attack2()
-	if Input.is_action_pressed("beacon"):
+	if Input.is_action_pressed("beacon") and $BeaconCD.is_stopped():
 		if !beaconed:
 			start_looping()
 			beaconed = true
@@ -32,6 +38,7 @@ func _process(delta: float) -> void:
 		if beaconed:
 			beaconed = false
 			stop_looping.emit()
+			$BeaconCD.start(0.5)
 	
 	var newPos = get_global_mouse_position()
 
@@ -98,17 +105,28 @@ func start_looping():
 	loopStart = currAng
 	looped = false
 	#print("stopped: loopStart is " + str(loopStart))
-	loopstart.emit(Vector2.from_angle(loopStart) * outRadius)
+	var dist =  inRadius + ((outRadius - inRadius) / 2)
+	loopstart.emit(Vector2.from_angle(loopStart) * dist)
 
 
 func _on_main_scene_loop() -> void:
 	ammo += 1
+	if (ammo >= max_ammo):
+		ammo = max_ammo
+		full_charge.emit()
 
 
 func _on_player_area_entered(area: Area2D) -> void:
 	if (area.is_in_group("enemy")):
-		if (area.has_method("destroy")):
+		if (area.is_in_group("solar") and shield):
+			print("protected")
+			shield = false
+		elif (area.is_in_group("antiwave") and anti_shield):
+			print("protected")
+			anti_shield = false
+		else:
 			$Health.damage(area.damage)
+		if (area.has_method("destroy")):
 			area.destroy()
 
 
@@ -126,3 +144,19 @@ func _on_timer_timeout() -> void:
 
 func _on_main_scene_antiloop() -> void:
 	anti_ammo += 1
+	if (anti_ammo >= max_ammo):
+		anti_ammo = max_ammo
+		anti_full.emit()
+
+
+func _on_main_scene_shield() -> void:
+	shield = true
+
+
+func _on_main_scene_anti_shield() -> void:
+	anti_shield = true
+
+
+func _on_main_scene_no_shield() -> void:
+	shield = false
+	anti_shield = false

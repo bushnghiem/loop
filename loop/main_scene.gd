@@ -2,11 +2,16 @@ extends Node2D
 
 signal loop
 signal antiloop
+signal shield
+signal anti_shield
+signal no_shield
 const abyss : Vector2 = Vector2(10000,10000)
 var started : bool = false
 var cw : bool = false
 var ccw : bool = false
 var three_fourths : bool = false
+var combo : int = 0
+var comboCD : float = 1.0
 @export var rock: PackedScene
 @export var antimatter: PackedScene
 
@@ -75,13 +80,21 @@ func _on_ccw_detector_touched() -> void:
 
 func _on_beacon_player_enter() -> void:
 	if (started and cw and three_fourths):
-		print("cw loop")
+		#print("cw loop")
 		loop.emit()
 		reset_beacon()
+		combo += 1
+		if combo > 1:
+			shield.emit()
+		$LoopCombo.start(comboCD)
 	elif(started and ccw and three_fourths):
-		print("ccw loop")
+		#print("ccw loop")
 		antiloop.emit()
 		reset_beacon()
+		combo += 1
+		if combo > 1:
+			anti_shield.emit()
+		$LoopCombo.start(comboCD)
 	elif (started and (cw or ccw) and !three_fourths):
 		#print("started then went backwards")
 		reset_beacon()
@@ -106,3 +119,12 @@ func _on_pointer_stop_looping() -> void:
 	$CWDetector.global_position = abyss
 	$CCWDetector.global_position = abyss
 	reset_beacon()
+
+
+func _on_loop_combo_timeout() -> void:
+	combo = 0
+	no_shield.emit()
+
+
+func _on_solar_time_timeout() -> void:
+	$AnimationPlayer.play("anti_wave")

@@ -7,7 +7,7 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_3vi8l"]
 radius = 64.9384
 
-[node name="Base" type="Area2D"]
+[node name="Base" type="Area2D" groups=["Player"]]
 scale = Vector2(0.5, 0.5)
 collision_mask = 6
 script = ExtResource("1_3vi8l")
