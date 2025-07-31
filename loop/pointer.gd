@@ -1,24 +1,37 @@
 extends Node2D
 @export var center : Vector2 = Vector2.ZERO
-@export var outRadius : float = 200
-@export var inRadius : float = 175
+@export var outRadius : float = 175
+@export var inRadius : float = 150
 @export var beacon : Node
 var stoplen : float = 1.0
 var prevPos : Vector2 = Vector2()
 var loopStart : float = 0.0
 var currAng : float = 0.0
 var stopped : bool = false
-var looped : bool =  false
+var looped : bool = false
 var ammo : int = 0
-var attackcd : float = 1.0
+var anti_ammo : int = 0
+var attackcd : float = 0.5
+var beaconed : bool = false
+
 signal loopstart(pos)
+signal stop_looping
 
 func _process(delta: float) -> void:
 	if Input.is_action_pressed("primary"):
 		if ($AttackCD.is_stopped() and ammo >= 1):
 			attack()
 	if Input.is_action_pressed("secondary"):
-		start_looping()
+		if ($AttackCD.is_stopped() and anti_ammo >= 1):
+			attack2()
+	if Input.is_action_pressed("beacon"):
+		if !beaconed:
+			start_looping()
+			beaconed = true
+	elif Input.is_action_just_released("beacon"):
+		if beaconed:
+			beaconed = false
+			stop_looping.emit()
 	
 	var newPos = get_global_mouse_position()
 
@@ -66,7 +79,19 @@ func attack():
 		if (inRange[area].has_method("destroy")):
 			inRange[area].destroy()
 	$AttackCD.start(attackcd)
+	$Timer.start(0.1)
+	$Sprite2D2.visible = true
 	ammo -= 1
+
+func attack2():
+	var inRange = $AttackRange2.get_overlapping_areas()
+	for area in range(inRange.size()):
+		if (inRange[area].has_method("destroy")):
+			inRange[area].destroy()
+	$AttackCD.start(attackcd)
+	$Timer.start(0.1)
+	$Sprite2D2.visible = true
+	anti_ammo -= 1
 
 func start_looping():
 	stopped = true
@@ -82,4 +107,22 @@ func _on_main_scene_loop() -> void:
 
 func _on_player_area_entered(area: Area2D) -> void:
 	if (area.is_in_group("enemy")):
-		print("hurt")
+		if (area.has_method("destroy")):
+			$Health.damage(area.damage)
+			area.destroy()
+
+
+func _on_health_zero_health() -> void:
+	print("protector death")
+
+
+func _on_attack_cd_timeout() -> void:
+	pass
+
+
+func _on_timer_timeout() -> void:
+	$Sprite2D2.visible = false
+
+
+func _on_main_scene_antiloop() -> void:
+	anti_ammo += 1

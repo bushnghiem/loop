@@ -1,19 +1,26 @@
-[gd_scene load_steps=5 format=3 uid="uid://b5xppvpvg5ww"]
+[gd_scene load_steps=6 format=3 uid="uid://b5xppvpvg5ww"]
 
 [ext_resource type="Texture2D" uid="uid://bfaev55rg1bvn" path="res://icon.svg" id="1_lu6pp"]
 [ext_resource type="Script" uid="uid://b8f64wwcqdogn" path="res://pointer.gd" id="1_p82c6"]
+[ext_resource type="PackedScene" uid="uid://dii6nwyt2yme8" path="res://health.tscn" id="3_asalp"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_p82c6"]
 radius = 61.0328
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_asalp"]
-radius = 214.0
+radius = 568.352
 
 [node name="Pointer" type="Node2D"]
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.25, 0.25)
 script = ExtResource("1_p82c6")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_lu6pp")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+visible = false
+self_modulate = Color(1, 1, 1, 0.345098)
+scale = Vector2(8, 8)
 texture = ExtResource("1_lu6pp")
 
 [node name="StopTimer" type="Timer" parent="."]
@@ -23,16 +30,35 @@ wait_time = 0.5
 one_shot = true
 
 [node name="Player" type="Area2D" parent="." groups=["Player"]]
-collision_mask = 2
+collision_mask = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 shape = SubResource("CircleShape2D_p82c6")
 
 [node name="AttackRange" type="Area2D" parent="."]
+visible = false
 collision_layer = 2
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackRange"]
 shape = SubResource("CircleShape2D_asalp")
 
+[node name="AttackRange2" type="Area2D" parent="."]
+visible = false
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackRange2"]
+shape = SubResource("CircleShape2D_asalp")
+
+[node name="Health" parent="." instance=ExtResource("3_asalp")]
+max_health = 50.0
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[connection signal="timeout" from="AttackCD" to="." method="_on_attack_cd_timeout"]
 [connection signal="area_entered" from="Player" to="." method="_on_player_area_entered"]
+[connection signal="zero_health" from="Health" to="." method="_on_health_zero_health"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

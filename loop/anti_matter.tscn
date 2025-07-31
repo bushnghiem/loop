@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://bo8a70s34gn7b"]
+
+[ext_resource type="Script" uid="uid://csa726d2de4ns" path="res://anti_matter.gd" id="1_1xiko"]
+[ext_resource type="Texture2D" uid="uid://bfaev55rg1bvn" path="res://icon.svg" id="1_viv13"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1xiko"]
+radius = 68.0074
+
+[node name="AntiMatter" type="Area2D" groups=["enemy"]]
+scale = Vector2(0.5, 0.5)
+collision_layer = 4
+collision_mask = 4
+script = ExtResource("1_1xiko")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.6, 0, 0.905882, 1)
+texture = ExtResource("1_viv13")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_1xiko")

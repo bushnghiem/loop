@@ -1,14 +1,23 @@
-[gd_scene load_steps=7 format=3 uid="uid://dj0urxok8lh5r"]
+[gd_scene load_steps=9 format=3 uid="uid://dj0urxok8lh5r"]
 
 [ext_resource type="PackedScene" uid="uid://b5xppvpvg5ww" path="res://pointer.tscn" id="1_0f027"]
 [ext_resource type="Script" uid="uid://bj5uakwxosvv0" path="res://main_scene.gd" id="1_gyfs4"]
 [ext_resource type="PackedScene" uid="uid://ck6pklxxsccjd" path="res://beacon.tscn" id="3_d5x1h"]
+[ext_resource type="PackedScene" uid="uid://bo8a70s34gn7b" path="res://anti_matter.tscn" id="3_nfk4m"]
 [ext_resource type="PackedScene" uid="uid://yb7otyw23ud7" path="res://detector.tscn" id="4_d5x1h"]
 [ext_resource type="PackedScene" uid="uid://bxndktw7bpuoo" path="res://rock.tscn" id="5_8mm7a"]
 [ext_resource type="PackedScene" uid="uid://duyj3kwvocu5y" path="res://base.tscn" id="6_hq1ik"]
 
+[sub_resource type="Curve2D" id="Curve2D_hq1ik"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, -960, -960, 0, 0, 0, 960, 0, 0, -960, 0, 0, 0, 960, 960, 0, 0, 0, -960, 0, 0, 960, 0, 0, 0, 0, -960, 0)
+}
+point_count = 5
+
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_gyfs4")
+rock = ExtResource("5_8mm7a")
+antimatter = ExtResource("3_nfk4m")
 
 [node name="Pointer" parent="." instance=ExtResource("1_0f027")]
 position = Vector2(2259, -252)
@@ -26,14 +35,25 @@ position = Vector2(-747, -403)
 modulate = Color(0, 0, 1, 1)
 position = Vector2(-347, -542)
 
-[node name="Rock" parent="." instance=ExtResource("5_8mm7a")]
-position = Vector2(-201, -173)
-
 [node name="Base" parent="." instance=ExtResource("6_hq1ik")]
 
+[node name="Path2D" type="Path2D" parent="."]
+curve = SubResource("Curve2D_hq1ik")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+position = Vector2(-960, 0)
+rotation = -1.5708
+
+[node name="MobSpawn" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[connection signal="antiloop" from="." to="Pointer" method="_on_main_scene_antiloop"]
 [connection signal="loop" from="." to="Pointer" method="_on_main_scene_loop"]
 [connection signal="loopstart" from="Pointer" to="." method="_on_pointer_loopstart"]
+[connection signal="stop_looping" from="Pointer" to="." method="_on_pointer_stop_looping"]
 [connection signal="player_enter" from="Beacon" to="." method="_on_beacon_player_enter"]
 [connection signal="player_leave" from="Beacon" to="." method="_on_beacon_player_leave"]
 [connection signal="touched" from="CWDetector" to="." method="_on_cw_detector_touched"]
 [connection signal="touched" from="CCWDetector" to="." method="_on_ccw_detector_touched"]
+[connection signal="timeout" from="MobSpawn" to="." method="_on_mob_spawn_timeout"]

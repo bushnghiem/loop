@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dii6nwyt2yme8"]
+
+[ext_resource type="Script" uid="uid://dugbx3xq52cdt" path="res://health.gd" id="1_hghoj"]
+
+[node name="Health" type="Node"]
+script = ExtResource("1_hghoj")
