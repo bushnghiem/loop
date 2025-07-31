@@ -1,19 +1,20 @@
 [gd_scene load_steps=4 format=3 uid="uid://ck6pklxxsccjd"]
 
 [ext_resource type="Script" uid="uid://bfltqqi1yfvn7" path="res://beacon.gd" id="1_1kq3a"]
-[ext_resource type="Texture2D" uid="uid://bfaev55rg1bvn" path="res://icon.svg" id="1_vstb5"]
+[ext_resource type="Texture2D" uid="uid://cem0wkjau4fwo" path="res://art/beacon.png" id="2_1kq3a"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1kq3a"]
 radius = 34.0588
 
 [node name="Beacon" type="Node2D"]
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.7, 0.7)
 script = ExtResource("1_1kq3a")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0, 1, 0, 1)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("1_vstb5")
+texture_filter = 1
+rotation = 1.5708
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_1kq3a")
 
 [node name="BeaconArea" type="Area2D" parent="."]
 

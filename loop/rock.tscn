@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bxndktw7bpuoo"]
 
 [ext_resource type="Script" uid="uid://o2ht3dj3oh3t" path="res://rock.gd" id="1_68h2w"]
-[ext_resource type="Texture2D" uid="uid://bfaev55rg1bvn" path="res://icon.svg" id="1_o0qsl"]
+[ext_resource type="Texture2D" uid="uid://cbdnn3txogctl" path="res://art/rock.png" id="2_68h2w"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_o0qsl"]
 radius = 65.3758
@@ -16,5 +16,6 @@ script = ExtResource("1_68h2w")
 shape = SubResource("CircleShape2D_o0qsl")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(1, 0, 0, 1)
-texture = ExtResource("1_o0qsl")
+texture_filter = 1
+scale = Vector2(4, 4)
+texture = ExtResource("2_68h2w")

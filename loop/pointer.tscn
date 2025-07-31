@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://b5xppvpvg5ww"]
+[gd_scene load_steps=15 format=3 uid="uid://b5xppvpvg5ww"]
 
 [ext_resource type="Texture2D" uid="uid://bfaev55rg1bvn" path="res://icon.svg" id="1_lu6pp"]
 [ext_resource type="Script" uid="uid://b8f64wwcqdogn" path="res://pointer.gd" id="1_p82c6"]
+[ext_resource type="Texture2D" uid="uid://b7ldm1nswskek" path="res://art/moon.png" id="2_rvxbq"]
 [ext_resource type="PackedScene" uid="uid://dii6nwyt2yme8" path="res://health.tscn" id="3_asalp"]
+[ext_resource type="Texture2D" uid="uid://de1b8qhbwqvry" path="res://art/shield-Sheet.png" id="4_d5mmh"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_p82c6"]
 radius = 61.0328
@@ -10,12 +12,111 @@ radius = 61.0328
 [sub_resource type="CircleShape2D" id="CircleShape2D_asalp"]
 radius = 568.352
 
+[sub_resource type="Animation" id="Animation_d5mmh"]
+resource_name = "shield"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Shield:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 2]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Shield2:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [2, 1, 0]
+}
+
+[sub_resource type="Animation" id="Animation_rvxbq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Shield:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Shield2:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qunp4"]
+_data = {
+&"RESET": SubResource("Animation_rvxbq"),
+&"shield": SubResource("Animation_d5mmh")
+}
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rvxbq"]
+particle_flag_disable_z = true
+angular_velocity_min = -256.55
+angular_velocity_max = -66.2
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -72.41
+linear_accel_max = 62.07
+tangential_accel_min = -81.61
+tangential_accel_max = 68.97
+scale_min = 2.0
+scale_max = 10.0
+
+[sub_resource type="Curve" id="Curve_rvxbq"]
+_data = [Vector2(0.0808824, 1), 0.0, -10.6966, 0, 0, Vector2(0.375, 0.393258), 0.0, 0.0, 0, 0, Vector2(0.691177, 0.258427), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_qunp4"]
+curve = SubResource("Curve_rvxbq")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qunp4"]
+particle_flag_disable_z = true
+angular_velocity_min = 720.0
+angular_velocity_max = 720.0
+radial_velocity_min = 1000.0
+radial_velocity_max = 1000.0
+radial_velocity_curve = SubResource("CurveTexture_qunp4")
+gravity = Vector3(0, 0, 0)
+linear_accel_min = 100.0
+linear_accel_max = 100.0
+radial_accel_min = -100.0
+radial_accel_max = 100.0
+tangential_accel_min = -100.0
+tangential_accel_max = 100.0
+scale_min = 5.0
+scale_max = 10.0
+
 [node name="Pointer" type="Node2D"]
 scale = Vector2(0.25, 0.25)
 script = ExtResource("1_p82c6")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_lu6pp")
+texture_filter = 1
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("2_rvxbq")
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 visible = false
@@ -59,6 +160,38 @@ wait_time = 0.1
 one_shot = true
 
 [node name="BeaconCD" type="Timer" parent="."]
+one_shot = true
+
+[node name="Shield" type="Sprite2D" parent="."]
+visible = false
+self_modulate = Color(1, 1, 1, 0.0784314)
+scale = Vector2(4, 4)
+texture = ExtResource("4_d5mmh")
+hframes = 3
+
+[node name="Shield2" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(1, 0, 1, 1)
+self_modulate = Color(1, 1, 1, 0.0784314)
+scale = Vector2(4, 4)
+texture = ExtResource("4_d5mmh")
+hframes = 3
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_qunp4")
+}
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 100
+process_material = SubResource("ParticleProcessMaterial_rvxbq")
+
+[node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 500
+lifetime = 0.5
+process_material = SubResource("ParticleProcessMaterial_qunp4")
 
 [connection signal="timeout" from="AttackCD" to="." method="_on_attack_cd_timeout"]
 [connection signal="area_entered" from="Player" to="." method="_on_player_area_entered"]

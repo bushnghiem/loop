@@ -1,12 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://1m5a0cf8iaui"]
 
 [ext_resource type="Script" uid="uid://d4drcm0em7c0b" path="res://solar_flare.gd" id="1_7ukvb"]
-[ext_resource type="Texture2D" uid="uid://bfaev55rg1bvn" path="res://icon.svg" id="1_8lujt"]
+[ext_resource type="Texture2D" uid="uid://ddq3jmei8ruky" path="res://art/solarflare.png" id="2_7ukvb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4fjow"]
 size = Vector2(1442, 599.5)
 
 [node name="SolarFlare" type="Area2D" groups=["enemy", "solar"]]
+texture_filter = 1
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("1_7ukvb")
@@ -15,10 +16,10 @@ script = ExtResource("1_7ukvb")
 shape = SubResource("RectangleShape2D_4fjow")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(1, 0, 0, 1)
-self_modulate = Color(1, 1, 1, 0.360784)
-position = Vector2(0, 6)
-scale = Vector2(11.2656, 4.78125)
-texture = ExtResource("1_8lujt")
+modulate = Color(1, 0.627451, 0.0117647, 1)
+self_modulate = Color(1, 1, 1, 0.278431)
+position = Vector2(120, 27)
+scale = Vector2(17.06, 13)
+texture = ExtResource("2_7ukvb")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

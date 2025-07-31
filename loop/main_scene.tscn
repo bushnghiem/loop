@@ -1,12 +1,14 @@
-[gd_scene load_steps=15 format=3 uid="uid://dj0urxok8lh5r"]
+[gd_scene load_steps=17 format=3 uid="uid://dj0urxok8lh5r"]
 
 [ext_resource type="PackedScene" uid="uid://b5xppvpvg5ww" path="res://pointer.tscn" id="1_0f027"]
 [ext_resource type="Script" uid="uid://bj5uakwxosvv0" path="res://main_scene.gd" id="1_gyfs4"]
 [ext_resource type="PackedScene" uid="uid://ck6pklxxsccjd" path="res://beacon.tscn" id="3_d5x1h"]
 [ext_resource type="PackedScene" uid="uid://bo8a70s34gn7b" path="res://anti_matter.tscn" id="3_nfk4m"]
 [ext_resource type="PackedScene" uid="uid://yb7otyw23ud7" path="res://detector.tscn" id="4_d5x1h"]
+[ext_resource type="Texture2D" uid="uid://hpt0ii4edu6o" path="res://art/bg_02_h.png" id="4_wr18j"]
 [ext_resource type="PackedScene" uid="uid://bxndktw7bpuoo" path="res://rock.tscn" id="5_8mm7a"]
 [ext_resource type="PackedScene" uid="uid://duyj3kwvocu5y" path="res://base.tscn" id="6_hq1ik"]
+[ext_resource type="Script" uid="uid://bfs1sk5bxwiv7" path="res://camscript.gd" id="6_qwutr"]
 [ext_resource type="PackedScene" uid="uid://1m5a0cf8iaui" path="res://solar_flare.tscn" id="8_66tet"]
 [ext_resource type="PackedScene" uid="uid://cidabko4fveu5" path="res://anti_wave.tscn" id="9_7ycvg"]
 
@@ -15,21 +17,6 @@ _data = {
 "points": PackedVector2Array(0, 0, 0, -960, -960, 0, 0, 0, 960, 0, 0, -960, 0, 0, 0, 960, 960, 0, 0, 0, -960, 0, 0, 960, 0, 0, 0, 0, -960, 0)
 }
 point_count = 5
-
-[sub_resource type="Animation" id="Animation_66tet"]
-resource_name = "solar_flare"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("SolarFlare:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(-3, -715), Vector2(-8, 680)]
-}
 
 [sub_resource type="Animation" id="Animation_7ycvg"]
 length = 0.001
@@ -73,6 +60,21 @@ tracks/0/keys = {
 "values": [Vector2(-8, -704), Vector2(-8, 681)]
 }
 
+[sub_resource type="Animation" id="Animation_66tet"]
+resource_name = "solar_flare"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SolarFlare:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(-3, -715), Vector2(-8, 680)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_7ycvg"]
 _data = {
 &"RESET": SubResource("Animation_7ycvg"),
@@ -85,10 +87,18 @@ script = ExtResource("1_gyfs4")
 rock = ExtResource("5_8mm7a")
 antimatter = ExtResource("3_nfk4m")
 
+[node name="Background" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("4_wr18j")
+
 [node name="Pointer" parent="." instance=ExtResource("1_0f027")]
 position = Vector2(2259, -252)
 
+[node name="Base" parent="." instance=ExtResource("6_hq1ik")]
+
 [node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("6_qwutr")
 
 [node name="Beacon" parent="." instance=ExtResource("3_d5x1h")]
 position = Vector2(-2158, 311)
@@ -100,8 +110,6 @@ position = Vector2(-2116, -393)
 [node name="CCWDetector" parent="." instance=ExtResource("4_d5x1h")]
 modulate = Color(0, 0, 1, 1)
 position = Vector2(-2158, -641)
-
-[node name="Base" parent="." instance=ExtResource("6_hq1ik")]
 
 [node name="Path2D" type="Path2D" parent="."]
 curve = SubResource("Curve2D_hq1ik")
@@ -119,7 +127,10 @@ one_shot = true
 
 [node name="SolarTime" type="Timer" parent="."]
 wait_time = 2.0
-autostart = true
+one_shot = true
+
+[node name="ShieldOff" type="Timer" parent="."]
+one_shot = true
 
 [node name="SolarFlare" parent="." instance=ExtResource("8_66tet")]
 position = Vector2(-3, -715)
@@ -140,8 +151,10 @@ position = Vector2(-8, -704)
 [connection signal="no_shield" from="." to="Base" method="_on_main_scene_no_shield"]
 [connection signal="shield" from="." to="Pointer" method="_on_main_scene_shield"]
 [connection signal="shield" from="." to="Base" method="_on_main_scene_shield"]
+[connection signal="hurt" from="Pointer" to="." method="_hurt"]
 [connection signal="loopstart" from="Pointer" to="." method="_on_pointer_loopstart"]
 [connection signal="stop_looping" from="Pointer" to="." method="_on_pointer_stop_looping"]
+[connection signal="hurt" from="Base" to="." method="_hurt"]
 [connection signal="player_enter" from="Beacon" to="." method="_on_beacon_player_enter"]
 [connection signal="player_leave" from="Beacon" to="." method="_on_beacon_player_leave"]
 [connection signal="touched" from="CWDetector" to="." method="_on_cw_detector_touched"]
@@ -149,3 +162,4 @@ position = Vector2(-8, -704)
 [connection signal="timeout" from="MobSpawn" to="." method="_on_mob_spawn_timeout"]
 [connection signal="timeout" from="LoopCombo" to="." method="_on_loop_combo_timeout"]
 [connection signal="timeout" from="SolarTime" to="." method="_on_solar_time_timeout"]
+[connection signal="timeout" from="ShieldOff" to="." method="_on_shield_off_timeout"]

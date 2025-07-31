@@ -12,6 +12,7 @@ var ccw : bool = false
 var three_fourths : bool = false
 var combo : int = 0
 var comboCD : float = 1.0
+var shield_duration : float = 1.0
 @export var rock: PackedScene
 @export var antimatter: PackedScene
 
@@ -40,7 +41,7 @@ func spawn(type):
 	newthing.rotation = randf_range(-PI / 4, PI / 4)
 
 	# Choose the velocity for the mob.
-	var velocity = randf_range(100, 300)
+	var velocity = randf_range(100, 200)
 	newthing.velocity = velocity * direction
 	
 
@@ -111,7 +112,7 @@ func _on_beacon_player_leave() -> void:
 
 
 func _on_mob_spawn_timeout() -> void:
-	spawn(2)
+	spawn(randi_range(1, 2))
 
 
 func _on_pointer_stop_looping() -> void:
@@ -123,8 +124,16 @@ func _on_pointer_stop_looping() -> void:
 
 func _on_loop_combo_timeout() -> void:
 	combo = 0
-	no_shield.emit()
+	$ShieldOff.start(shield_duration)
 
 
 func _on_solar_time_timeout() -> void:
 	$AnimationPlayer.play("anti_wave")
+
+
+func _on_shield_off_timeout() -> void:
+	no_shield.emit()
+
+
+func _hurt(amount: Variant) -> void:
+	$Camera2D.apply_shake(amount)
