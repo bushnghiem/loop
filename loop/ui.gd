@@ -1,4 +1,7 @@
 extends Control
+var count = 0
+var warning_text = ""
+
 
 func _ready() -> void:
 	print($Charge.text)
@@ -9,7 +12,7 @@ func _on_pointer_ammo_update(ammo: Variant, antiammo: Variant) -> void:
 	$AntiCharge.set_text(str(antiammo) + " / 10")
 
 func _on_main_scene_update_year(year: Variant) -> void:
-	$Year.text = "Year " + str(year)
+	$Year.text = "Year " + str(snapped(year, 1))
 
 
 func _on_base_shields_update(shield: Variant, antishield: Variant) -> void:
@@ -17,13 +20,36 @@ func _on_base_shields_update(shield: Variant, antishield: Variant) -> void:
 	$AntiShield.visible = antishield
 
 func solarWarning():
-	for n in 3:
-		get_tree().create_timer(1 * n).timeout.connect(func():
-			$SolarWarning.text = str(n)
-		)
+	print("solar warn")
+	warning_text = "Solar Flare In \n"
+	count = 3
+	$Timer.start()
 
 func antiWaveWarning():
-	for n in 3:
-		get_tree().create_timer(1 * n).timeout.connect(func():
-			$AntiWaveWarning.text = str(n)
-			)
+	print("anti warn")
+	warning_text = "Anti-Matter Wave In \n"
+	count = 3
+	$Timer.start()
+
+
+func _on_timer_timeout() -> void:
+	if count > 0:
+		$Warning.text = warning_text + str(count)
+		count -=1
+		$Timer.start()
+	else:
+		$Warning.text = ""
+	
+
+
+func _on_main_scene_update_score(_score: Variant) -> void:
+	$Score.text = str(snapped(_score, 1))
+
+
+func _on_main_scene_update_combo(_combo: Variant) -> void:
+	if _combo == 0:
+		$LoopCombo.text = ""
+	elif _combo == 1:
+		$LoopCombo.text = "Loop"
+	elif _combo > 1:
+		$LoopCombo.text = "Loop X" + str(_combo)

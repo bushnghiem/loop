@@ -95,6 +95,7 @@ func attack():
 			inRange[area].destroy()
 	$AttackCD.start(attackcd)
 	$GPUParticles2D2.emitting = true
+	$primary.play()
 	$Timer.start(0.1)
 	$Sprite2D2.visible = true
 	ammo -= 1
@@ -107,6 +108,7 @@ func attack2():
 			inRange[area].destroy()
 	$AttackCD.start(attackcd)
 	$GPUParticles2D3.emitting = true
+	$secondary.play()
 	$Timer.start(0.1)
 	$Sprite2D2.visible = true
 	anti_ammo -= 1
@@ -142,8 +144,8 @@ func _on_player_area_entered(area: Area2D) -> void:
 		else:
 			$Health.damage(area.damage)
 			hurt.emit(area.damage)
-		if (area.has_method("destroy")):
-			area.destroy()
+		if (area.has_method("die")):
+			area.die()
 
 
 func _on_health_zero_health() -> void:

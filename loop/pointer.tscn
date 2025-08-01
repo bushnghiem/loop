@@ -1,10 +1,12 @@
-[gd_scene load_steps=18 format=3 uid="uid://b5xppvpvg5ww"]
+[gd_scene load_steps=20 format=3 uid="uid://b5xppvpvg5ww"]
 
 [ext_resource type="Texture2D" uid="uid://bfaev55rg1bvn" path="res://icon.svg" id="1_lu6pp"]
 [ext_resource type="Script" uid="uid://b8f64wwcqdogn" path="res://pointer.gd" id="1_p82c6"]
 [ext_resource type="Texture2D" uid="uid://b7ldm1nswskek" path="res://art/moon.png" id="2_rvxbq"]
 [ext_resource type="PackedScene" uid="uid://dii6nwyt2yme8" path="res://health.tscn" id="3_asalp"]
 [ext_resource type="Texture2D" uid="uid://de1b8qhbwqvry" path="res://art/shield-Sheet.png" id="4_d5mmh"]
+[ext_resource type="AudioStream" uid="uid://djicr6ssr0knq" path="res://soundfx/blow-into-microphone-001-11346.mp3" id="6_qunp4"]
+[ext_resource type="AudioStream" uid="uid://diuxqncque57v" path="res://soundfx/elemental-magic-spell-impact-incoming-228343.mp3" id="7_a1g42"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_p82c6"]
 radius = 61.0328
@@ -221,6 +223,12 @@ process_material = SubResource("ParticleProcessMaterial_qunp4")
 emitting = false
 amount = 500
 process_material = SubResource("ParticleProcessMaterial_a1g42")
+
+[node name="primary" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_qunp4")
+
+[node name="secondary" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_a1g42")
 
 [connection signal="timeout" from="AttackCD" to="." method="_on_attack_cd_timeout"]
 [connection signal="area_entered" from="Player" to="." method="_on_player_area_entered"]

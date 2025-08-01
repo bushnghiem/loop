@@ -3,6 +3,7 @@ var shield : bool = false
 var anti_shield : bool = false
 signal hurt(amount)
 signal shields_update(shield, antishield)
+signal protected
 
 func _ready() -> void:
 	$AnimationPlayer.play("spin")
@@ -11,20 +12,20 @@ func _ready() -> void:
 func _on_area_entered(area: Area2D) -> void:
 	if (area.is_in_group("enemy")):
 		if (area.is_in_group("solar") and shield):
-			print("protected")
 			shield = false
 			$Shield.visible = false
+			protected.emit()
 			shields_update.emit(shield, anti_shield)
 		elif (area.is_in_group("antiwave") and anti_shield):
-			print("protected")
 			anti_shield = false
 			$Shield2.visible = false
+			protected.emit()
 			shields_update.emit(shield, anti_shield)
 		else:
 			$Health.damage(area.damage)
 			hurt.emit(area.damage)
-		if (area.has_method("destroy")):
-			area.destroy()
+		if (area.has_method("die")):
+			area.die()
 
 
 func _on_health_zero_health() -> void:

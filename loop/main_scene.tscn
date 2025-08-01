@@ -1,10 +1,11 @@
-[gd_scene load_steps=18 format=3 uid="uid://dj0urxok8lh5r"]
+[gd_scene load_steps=20 format=3 uid="uid://dj0urxok8lh5r"]
 
 [ext_resource type="PackedScene" uid="uid://b5xppvpvg5ww" path="res://pointer.tscn" id="1_0f027"]
 [ext_resource type="Script" uid="uid://bj5uakwxosvv0" path="res://main_scene.gd" id="1_gyfs4"]
 [ext_resource type="PackedScene" uid="uid://ck6pklxxsccjd" path="res://beacon.tscn" id="3_d5x1h"]
 [ext_resource type="PackedScene" uid="uid://bo8a70s34gn7b" path="res://anti_matter.tscn" id="3_nfk4m"]
 [ext_resource type="PackedScene" uid="uid://yb7otyw23ud7" path="res://detector.tscn" id="4_d5x1h"]
+[ext_resource type="PackedScene" uid="uid://3aeehou41eig" path="res://score_label.tscn" id="4_mo76n"]
 [ext_resource type="Texture2D" uid="uid://hpt0ii4edu6o" path="res://art/bg_02_h.png" id="4_wr18j"]
 [ext_resource type="PackedScene" uid="uid://bxndktw7bpuoo" path="res://rock.tscn" id="5_8mm7a"]
 [ext_resource type="PackedScene" uid="uid://duyj3kwvocu5y" path="res://base.tscn" id="6_hq1ik"]
@@ -12,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://1m5a0cf8iaui" path="res://solar_flare.tscn" id="8_66tet"]
 [ext_resource type="PackedScene" uid="uid://cidabko4fveu5" path="res://anti_wave.tscn" id="9_7ycvg"]
 [ext_resource type="PackedScene" uid="uid://brbns00kia1i" path="res://ui.tscn" id="12_671wp"]
+[ext_resource type="AudioStream" uid="uid://c108t03kl0ibh" path="res://soundfx/energy-90321.mp3" id="14_42l1d"]
 
 [sub_resource type="Curve2D" id="Curve2D_hq1ik"]
 _data = {
@@ -87,6 +89,7 @@ _data = {
 script = ExtResource("1_gyfs4")
 rock = ExtResource("5_8mm7a")
 antimatter = ExtResource("3_nfk4m")
+scoreLabel = ExtResource("4_mo76n")
 
 [node name="Background" type="Sprite2D" parent="."]
 texture_filter = 1
@@ -132,11 +135,11 @@ one_shot = true
 autostart = true
 
 [node name="SolarTimer" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 4.0
 one_shot = true
 
 [node name="AntiWaveTimer" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 4.0
 one_shot = true
 
 [node name="ShieldOff" type="Timer" parent="."]
@@ -162,6 +165,10 @@ offset_top = -324.0
 offset_right = -576.0
 offset_bottom = -324.0
 
+[node name="loop" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("14_42l1d")
+pitch_scale = 0.5
+
 [connection signal="antiWaveWarning" from="." to="UI" method="antiWaveWarning"]
 [connection signal="anti_shield" from="." to="Pointer" method="_on_main_scene_anti_shield"]
 [connection signal="anti_shield" from="." to="Base" method="_on_main_scene_anti_shield"]
@@ -172,12 +179,15 @@ offset_bottom = -324.0
 [connection signal="shield" from="." to="Pointer" method="_on_main_scene_shield"]
 [connection signal="shield" from="." to="Base" method="_on_main_scene_shield"]
 [connection signal="solarWarning" from="." to="UI" method="solarWarning"]
+[connection signal="update_combo" from="." to="UI" method="_on_main_scene_update_combo"]
+[connection signal="update_score" from="." to="UI" method="_on_main_scene_update_score"]
 [connection signal="update_year" from="." to="UI" method="_on_main_scene_update_year"]
 [connection signal="ammo_update" from="Pointer" to="UI" method="_on_pointer_ammo_update"]
 [connection signal="hurt" from="Pointer" to="." method="_hurt"]
 [connection signal="loopstart" from="Pointer" to="." method="_on_pointer_loopstart"]
 [connection signal="stop_looping" from="Pointer" to="." method="_on_pointer_stop_looping"]
 [connection signal="hurt" from="Base" to="." method="_hurt"]
+[connection signal="protected" from="Base" to="." method="_on_base_protected"]
 [connection signal="shields_update" from="Base" to="UI" method="_on_base_shields_update"]
 [connection signal="player_enter" from="Beacon" to="." method="_on_beacon_player_enter"]
 [connection signal="player_leave" from="Beacon" to="." method="_on_beacon_player_leave"]

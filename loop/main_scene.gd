@@ -8,6 +8,9 @@ signal no_shield
 signal update_year(year)
 signal solarWarning
 signal antiWaveWarning
+signal update_score(_score)
+signal update_combo(_combo)
+
 
 const abyss : Vector2 = Vector2(10000,10000)
 var started : bool = false
@@ -15,11 +18,16 @@ var cw : bool = false
 var ccw : bool = false
 var three_fourths : bool = false
 var combo : int = 0
-var comboCD : float = 1.0
+var comboCD : float = 2.0
 var shield_duration : float = 1.0
-var year = 2050
+var year : float = 2050
+var score : float = 0
+var scoreMulti : float = 1.0
+var shield_score : float = 50
+
 @export var rock: PackedScene
 @export var antimatter: PackedScene
+@export var scoreLabel: PackedScene
 
 func _ready() -> void:
 	spawn(1)
@@ -31,6 +39,8 @@ func spawn(type):
 		newthing = rock.instantiate()
 	elif (type == 2):
 		newthing = antimatter.instantiate()
+		
+	newthing.death.connect(enemyDeath)
 
 	# Choose a random location on Path2D.
 	var rock_pos = $Path2D/PathFollow2D
@@ -93,6 +103,10 @@ func _on_beacon_player_enter() -> void:
 		if combo > 1:
 			shield.emit()
 		$LoopCombo.start(comboCD)
+		$loop.pitch_scale = 0.5 + (combo / 5)
+		$loop.volume_db = (combo / 5)
+		$loop.play()
+		update_combo.emit(combo)
 	elif(started and ccw and three_fourths):
 		#print("ccw loop")
 		antiloop.emit()
@@ -101,6 +115,10 @@ func _on_beacon_player_enter() -> void:
 		if combo > 1:
 			anti_shield.emit()
 		$LoopCombo.start(comboCD)
+		$loop.pitch_scale = 0.5 + (combo / 5)
+		$loop.volume_db = (combo / 5)
+		$loop.play()
+		update_combo.emit(combo)
 	elif (started and (cw or ccw) and !three_fourths):
 		#print("started then went backwards")
 		reset_beacon()
@@ -129,6 +147,7 @@ func _on_pointer_stop_looping() -> void:
 
 func _on_loop_combo_timeout() -> void:
 	combo = 0
+	update_combo.emit(combo)
 	$ShieldOff.start(shield_duration)
 
 
@@ -163,3 +182,18 @@ func _on_solar_timer_timeout() -> void:
 
 func _on_anti_wave_timer_timeout() -> void:
 	$AnimationPlayer.play("anti_wave")
+
+func enemyDeath(_score, _position):
+	score += _score * scoreMulti * (combo + 1)
+	update_score.emit(score)
+	createScoreLabel(_score * scoreMulti * (combo + 1), _position)
+
+func createScoreLabel(_score, _position):
+	var newScore = scoreLabel.instantiate()
+	newScore.setup(_score)
+	newScore.global_position = _position
+	add_child(newScore)
+
+func _on_base_protected() -> void:
+	score += shield_score * scoreMulti * (combo + 1)
+	update_score.emit(score)
