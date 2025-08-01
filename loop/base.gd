@@ -2,6 +2,7 @@ extends Area2D
 var shield : bool = false
 var anti_shield : bool = false
 signal hurt(amount)
+signal shields_update(shield, antishield)
 
 func _ready() -> void:
 	$AnimationPlayer.play("spin")
@@ -13,10 +14,12 @@ func _on_area_entered(area: Area2D) -> void:
 			print("protected")
 			shield = false
 			$Shield.visible = false
+			shields_update.emit(shield, anti_shield)
 		elif (area.is_in_group("antiwave") and anti_shield):
 			print("protected")
 			anti_shield = false
 			$Shield2.visible = false
+			shields_update.emit(shield, anti_shield)
 		else:
 			$Health.damage(area.damage)
 			hurt.emit(area.damage)
@@ -31,11 +34,13 @@ func _on_health_zero_health() -> void:
 func _on_main_scene_shield() -> void:
 	shield = true
 	$Shield.visible = true
+	shields_update.emit(shield, anti_shield)
 
 
 func _on_main_scene_anti_shield() -> void:
 	anti_shield = true
 	$Shield2.visible = true
+	shields_update.emit(shield, anti_shield)
 
 
 func _on_main_scene_no_shield() -> void:
@@ -43,3 +48,4 @@ func _on_main_scene_no_shield() -> void:
 	anti_shield = false
 	$Shield.visible = false
 	$Shield2.visible = false
+	shields_update.emit(shield, anti_shield)

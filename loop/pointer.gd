@@ -18,6 +18,7 @@ var max_ammo : int = 10
 var shield : bool = false
 var anti_shield : bool = false
 
+signal ammo_update(ammo, antiammo)
 signal loopstart(pos)
 signal full_charge
 signal anti_full
@@ -97,6 +98,7 @@ func attack():
 	$Timer.start(0.1)
 	$Sprite2D2.visible = true
 	ammo -= 1
+	ammo_update.emit(ammo, anti_ammo)
 
 func attack2():
 	var inRange = $AttackRange2.get_overlapping_areas()
@@ -104,9 +106,11 @@ func attack2():
 		if (inRange[area].has_method("destroy")):
 			inRange[area].destroy()
 	$AttackCD.start(attackcd)
+	$GPUParticles2D3.emitting = true
 	$Timer.start(0.1)
 	$Sprite2D2.visible = true
 	anti_ammo -= 1
+	ammo_update.emit(ammo, anti_ammo)
 
 func start_looping():
 	stopped = true
@@ -122,6 +126,7 @@ func _on_main_scene_loop() -> void:
 	if (ammo >= max_ammo):
 		ammo = max_ammo
 		full_charge.emit()
+	ammo_update.emit(ammo, anti_ammo)
 
 
 func _on_player_area_entered(area: Area2D) -> void:
@@ -152,6 +157,7 @@ func _on_attack_cd_timeout() -> void:
 func _on_timer_timeout() -> void:
 	$Sprite2D2.visible = false
 	$GPUParticles2D2.emitting = false
+	$GPUParticles2D3.emitting = false
 
 
 func _on_main_scene_antiloop() -> void:
@@ -159,6 +165,7 @@ func _on_main_scene_antiloop() -> void:
 	if (anti_ammo >= max_ammo):
 		anti_ammo = max_ammo
 		anti_full.emit()
+	ammo_update.emit(ammo, anti_ammo)
 
 
 func _on_main_scene_shield() -> void:

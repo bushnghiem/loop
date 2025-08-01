@@ -126,17 +126,8 @@ autostart = true
 [node name="LoopCombo" type="Timer" parent="."]
 one_shot = true
 
-[node name="WaveTimer" type="Timer" parent="."]
+[node name="SolarTime" type="Timer" parent="."]
 wait_time = 2.0
-one_shot = true
-autostart = true
-
-[node name="SolarTimer" type="Timer" parent="."]
-wait_time = 3.0
-one_shot = true
-
-[node name="AntiWaveTimer" type="Timer" parent="."]
-wait_time = 3.0
 one_shot = true
 
 [node name="ShieldOff" type="Timer" parent="."]
@@ -162,7 +153,6 @@ offset_top = -324.0
 offset_right = -576.0
 offset_bottom = -324.0
 
-[connection signal="antiWaveWarning" from="." to="UI" method="antiWaveWarning"]
 [connection signal="anti_shield" from="." to="Pointer" method="_on_main_scene_anti_shield"]
 [connection signal="anti_shield" from="." to="Base" method="_on_main_scene_anti_shield"]
 [connection signal="antiloop" from="." to="Pointer" method="_on_main_scene_antiloop"]
@@ -171,7 +161,6 @@ offset_bottom = -324.0
 [connection signal="no_shield" from="." to="Base" method="_on_main_scene_no_shield"]
 [connection signal="shield" from="." to="Pointer" method="_on_main_scene_shield"]
 [connection signal="shield" from="." to="Base" method="_on_main_scene_shield"]
-[connection signal="solarWarning" from="." to="UI" method="solarWarning"]
 [connection signal="update_year" from="." to="UI" method="_on_main_scene_update_year"]
 [connection signal="ammo_update" from="Pointer" to="UI" method="_on_pointer_ammo_update"]
 [connection signal="hurt" from="Pointer" to="." method="_hurt"]
@@ -185,8 +174,6 @@ offset_bottom = -324.0
 [connection signal="touched" from="CCWDetector" to="." method="_on_ccw_detector_touched"]
 [connection signal="timeout" from="MobSpawn" to="." method="_on_mob_spawn_timeout"]
 [connection signal="timeout" from="LoopCombo" to="." method="_on_loop_combo_timeout"]
-[connection signal="timeout" from="WaveTimer" to="." method="_on_wave_time_timeout"]
-[connection signal="timeout" from="SolarTimer" to="." method="_on_solar_timer_timeout"]
-[connection signal="timeout" from="AntiWaveTimer" to="." method="_on_anti_wave_timer_timeout"]
+[connection signal="timeout" from="SolarTime" to="." method="_on_solar_time_timeout"]
 [connection signal="timeout" from="ShieldOff" to="." method="_on_shield_off_timeout"]
 [connection signal="timeout" from="Clock" to="." method="_on_clock_timeout"]

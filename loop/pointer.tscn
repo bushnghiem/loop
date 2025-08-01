@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://b5xppvpvg5ww"]
+[gd_scene load_steps=18 format=3 uid="uid://b5xppvpvg5ww"]
 
 [ext_resource type="Texture2D" uid="uid://bfaev55rg1bvn" path="res://icon.svg" id="1_lu6pp"]
 [ext_resource type="Script" uid="uid://b8f64wwcqdogn" path="res://pointer.gd" id="1_p82c6"]
@@ -11,6 +11,33 @@ radius = 61.0328
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_asalp"]
 radius = 568.352
+
+[sub_resource type="Animation" id="Animation_rvxbq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Shield:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Shield2:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
 
 [sub_resource type="Animation" id="Animation_d5mmh"]
 resource_name = "shield"
@@ -40,33 +67,6 @@ tracks/1/keys = {
 "values": [2, 1, 0]
 }
 
-[sub_resource type="Animation" id="Animation_rvxbq"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Shield:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Shield2:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qunp4"]
 _data = {
 &"RESET": SubResource("Animation_rvxbq"),
@@ -86,7 +86,7 @@ scale_min = 2.0
 scale_max = 10.0
 
 [sub_resource type="Curve" id="Curve_rvxbq"]
-_data = [Vector2(0.0808824, 1), 0.0, -10.6966, 0, 0, Vector2(0.375, 0.393258), 0.0, 0.0, 0, 0, Vector2(0.691177, 0.258427), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0.0808824, 1), 0.0, -10.6966, 0, 0, Vector2(0.375, 0.393258), 0.0, 0.0, 0, 0, Vector2(0.691177, 0.258427), 0.0, 0.0, 0, 0, Vector2(1, 0.11236), 0.0, 0.0, 0, 0]
 point_count = 4
 
 [sub_resource type="CurveTexture" id="CurveTexture_qunp4"]
@@ -108,6 +108,31 @@ tangential_accel_min = -100.0
 tangential_accel_max = 100.0
 scale_min = 5.0
 scale_max = 10.0
+
+[sub_resource type="Curve" id="Curve_qunp4"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.146068), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_a1g42"]
+curve = SubResource("Curve_qunp4")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_a1g42"]
+particle_flag_disable_z = true
+angular_velocity_min = 720.0
+angular_velocity_max = 720.0
+radial_velocity_min = 1000.0
+radial_velocity_max = 1000.0
+radial_velocity_curve = SubResource("CurveTexture_a1g42")
+gravity = Vector3(0, 0, 0)
+linear_accel_min = 100.0
+linear_accel_max = 100.0
+radial_accel_min = -100.0
+radial_accel_max = 100.0
+tangential_accel_min = -100.0
+tangential_accel_max = 100.0
+scale_min = 5.0
+scale_max = 10.0
+color = Color(0.631373, 0, 1, 1)
 
 [node name="Pointer" type="Node2D"]
 scale = Vector2(0.25, 0.25)
@@ -190,8 +215,12 @@ process_material = SubResource("ParticleProcessMaterial_rvxbq")
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
 emitting = false
 amount = 500
-lifetime = 0.5
 process_material = SubResource("ParticleProcessMaterial_qunp4")
+
+[node name="GPUParticles2D3" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 500
+process_material = SubResource("ParticleProcessMaterial_a1g42")
 
 [connection signal="timeout" from="AttackCD" to="." method="_on_attack_cd_timeout"]
 [connection signal="area_entered" from="Player" to="." method="_on_player_area_entered"]

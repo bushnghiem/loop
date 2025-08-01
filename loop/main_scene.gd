@@ -5,6 +5,10 @@ signal antiloop
 signal shield
 signal anti_shield
 signal no_shield
+signal update_year(year)
+signal solarWarning
+signal antiWaveWarning
+
 const abyss : Vector2 = Vector2(10000,10000)
 var started : bool = false
 var cw : bool = false
@@ -13,6 +17,7 @@ var three_fourths : bool = false
 var combo : int = 0
 var comboCD : float = 1.0
 var shield_duration : float = 1.0
+var year = 2050
 @export var rock: PackedScene
 @export var antimatter: PackedScene
 
@@ -127,8 +132,16 @@ func _on_loop_combo_timeout() -> void:
 	$ShieldOff.start(shield_duration)
 
 
-func _on_solar_time_timeout() -> void:
-	$AnimationPlayer.play("anti_wave")
+func _on_wave_time_timeout() -> void:
+	var rand_type = randi_range(1, 2)
+	if (rand_type == 1):
+		solarWarning.emit()
+		$SolarTimer.start()
+	elif (rand_type == 2):
+		antiWaveWarning.emit()
+		$AntiWaveTimer.start()
+	var rand_time = randi_range(10, 30)
+	$WaveTimer.start(rand_time)
 
 
 func _on_shield_off_timeout() -> void:
@@ -137,3 +150,16 @@ func _on_shield_off_timeout() -> void:
 
 func _hurt(amount: Variant) -> void:
 	$Camera2D.apply_shake(amount)
+
+
+func _on_clock_timeout() -> void:
+	year += 5
+	update_year.emit(year)
+
+
+func _on_solar_timer_timeout() -> void:
+	$AnimationPlayer.play("solar_flare")
+
+
+func _on_anti_wave_timer_timeout() -> void:
+	$AnimationPlayer.play("anti_wave")
