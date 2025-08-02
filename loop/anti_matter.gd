@@ -8,7 +8,8 @@ var velocity : Vector2 = Vector2(1,0)
 var damage : float = 50.0
 var rotation_speed : float = -1.0
 
-var score : float = 10
+@export var score : float = 20
+
 
 func _ready() -> void:
 	rotation_speed = randf_range(-0.1, -4)

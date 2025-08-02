@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bl7j0wwlkrkdj"]
+
+[ext_resource type="PackedScene" uid="uid://bo8a70s34gn7b" path="res://anti_matter.tscn" id="1_n7yru"]
+[ext_resource type="Script" uid="uid://cgkxahqoojlm2" path="res://anti_matter_hide.gd" id="2_c687g"]
+
+[node name="AntiMatterHide" instance=ExtResource("1_n7yru")]
+script = ExtResource("2_c687g")
+score = 40.0
+
+[node name="Sprite2D" parent="." index="0"]
+modulate = Color(0.741176, 0.156863, 0.2, 1)
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." index="3"]
+
+[connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_entered"]

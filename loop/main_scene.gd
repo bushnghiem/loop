@@ -35,7 +35,9 @@ var tutorial_stage : int = 0
 var tutormode : bool = false
 
 @export var rock: PackedScene
+@export var bounce: PackedScene
 @export var antimatter: PackedScene
+@export var ghost: PackedScene
 @export var scoreLabel: PackedScene
 @export var deathParticle: PackedScene
 
@@ -56,6 +58,7 @@ func _process(delta: float) -> void:
 		$MainMenu.set_play_pos($Pointer.global_position)
 
 func play():
+	spawn(4)
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	$UI.visible = true
 	$menunoise.play()
@@ -117,7 +120,10 @@ func spawn(type):
 		newthing = rock.instantiate()
 	elif (type == 2):
 		newthing = antimatter.instantiate()
-		
+	elif (type == 3): 
+		newthing = bounce.instantiate()
+	elif (type == 4):
+		newthing = ghost.instantiate()
 	newthing.death.connect(enemyDeath)
 
 	# Choose a random location on Path2D.
@@ -219,7 +225,7 @@ func _on_beacon_player_leave() -> void:
 
 
 func _on_mob_spawn_timeout() -> void:
-	spawn(randi_range(1, 2))
+	spawn(randi_range(1, 4))
 	$MobSpawn.start(spawn_time)
 
 
