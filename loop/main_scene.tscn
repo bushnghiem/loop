@@ -261,16 +261,23 @@ libraries = {
 
 [node name="MainMenu" parent="." instance=ExtResource("20_84odl")]
 
+[node name="TutorialClock" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
 [connection signal="antiWaveWarning" from="." to="UI" method="antiWaveWarning"]
 [connection signal="anti_shield" from="." to="Pointer" method="_on_main_scene_anti_shield"]
 [connection signal="anti_shield" from="." to="Base" method="_on_main_scene_anti_shield"]
 [connection signal="antiloop" from="." to="Pointer" method="_on_main_scene_antiloop"]
+[connection signal="invincible" from="." to="Pointer" method="_on_main_scene_invincible"]
+[connection signal="invincible" from="." to="Base" method="_on_main_scene_invincible"]
 [connection signal="loop" from="." to="Pointer" method="_on_main_scene_loop"]
 [connection signal="no_shield" from="." to="Pointer" method="_on_main_scene_no_shield"]
 [connection signal="no_shield" from="." to="Base" method="_on_main_scene_no_shield"]
 [connection signal="shield" from="." to="Pointer" method="_on_main_scene_shield"]
 [connection signal="shield" from="." to="Base" method="_on_main_scene_shield"]
 [connection signal="solarWarning" from="." to="UI" method="solarWarning"]
+[connection signal="tutormessage" from="." to="UI" method="_on_main_scene_tutormessage"]
 [connection signal="update_combo" from="." to="UI" method="_on_main_scene_update_combo"]
 [connection signal="update_score" from="." to="UI" method="_on_main_scene_update_score"]
 [connection signal="update_year" from="." to="UI" method="_on_main_scene_update_year"]
@@ -278,8 +285,12 @@ libraries = {
 [connection signal="death" from="Pointer" to="." method="_on_pointer_death"]
 [connection signal="hurt" from="Pointer" to="." method="_on_pointer_hurt"]
 [connection signal="hurt" from="Pointer" to="." method="_hurt"]
+[connection signal="killed_anti" from="Pointer" to="." method="_on_pointer_killed_anti"]
+[connection signal="killed_rock" from="Pointer" to="." method="_on_pointer_killed_rock"]
 [connection signal="loopstart" from="Pointer" to="." method="_on_pointer_loopstart"]
 [connection signal="stop_looping" from="Pointer" to="." method="_on_pointer_stop_looping"]
+[connection signal="blocked_solar" from="Base" to="." method="_on_base_blocked_solar"]
+[connection signal="blocked_wave" from="Base" to="." method="_on_base_blocked_wave"]
 [connection signal="game_over" from="Base" to="." method="_on_base_game_over"]
 [connection signal="hurt" from="Base" to="." method="_on_base_hurt"]
 [connection signal="hurt" from="Base" to="." method="_hurt"]
@@ -298,3 +309,6 @@ libraries = {
 [connection signal="timeout" from="Clock" to="." method="_on_clock_timeout"]
 [connection signal="play" from="MainMenu" to="." method="play"]
 [connection signal="play" from="MainMenu" to="Pointer" method="play"]
+[connection signal="tutor" from="MainMenu" to="." method="_on_main_menu_tutor"]
+[connection signal="tutor" from="MainMenu" to="Pointer" method="play"]
+[connection signal="timeout" from="TutorialClock" to="." method="_on_tutorial_clock_timeout"]

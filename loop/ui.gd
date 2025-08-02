@@ -61,3 +61,7 @@ func _on_main_scene_update_combo(_combo: Variant) -> void:
 		$LoopCombo.text = "Loop"
 	elif _combo > 1:
 		$LoopCombo.text = "Loop X" + str(_combo)
+
+
+func _on_main_scene_tutormessage(message: Variant) -> void:
+	$TutorialMessage.text = message

@@ -1,7 +1,7 @@
 extends Node2D
 @export var center : Vector2 = Vector2.ZERO
 @export var outRadius : float = 175
-@export var inRadius : float = 150
+@export var inRadius : float = 160
 @export var beacon : Node
 var stoplen : float = 1.0
 var prevPos : Vector2 = Vector2()
@@ -17,6 +17,8 @@ var beaconCD : float = 0.5
 var max_ammo : int = 10
 var shield : bool = false
 var anti_shield : bool = false
+var main_menu : bool = true
+var invincible = false
 
 signal ammo_update(ammo, antiammo)
 signal loopstart(pos)
@@ -25,6 +27,8 @@ signal anti_full
 signal stop_looping
 signal hurt(amount)
 signal death(position)
+signal killed_rock
+signal killed_anti
 
 func _ready() -> void:
 	$AnimationPlayer2.play("shield")
@@ -33,72 +37,81 @@ func play():
 	ammo = 0
 	anti_ammo = 0
 	ammo_update.emit(ammo, anti_ammo)
+	main_menu = false
 
 func _process(delta: float) -> void:
-	if Input.is_action_pressed("primary") and !beaconed:
-		if ($AttackCD.is_stopped() and ammo >= 1):
-			attack()
-	if Input.is_action_pressed("secondary") and !beaconed:
-		if ($AttackCD.is_stopped() and anti_ammo >= 1):
-			attack2()
-	if Input.is_action_pressed("beacon") and $BeaconCD.is_stopped():
-		if !beaconed:
-			start_looping()
-			$GPUParticles2D.emitting = true
-			beaconed = true
-	elif Input.is_action_just_released("beacon"):
-		if beaconed:
-			beaconed = false
-			$GPUParticles2D.emitting = false
-			stop_looping.emit()
-			$BeaconCD.start(0.5)
-	
-	var newPos = get_global_mouse_position()
-
-	var offset = newPos - center
-
-	if (offset.length() > outRadius):
-		newPos = center + offset.normalized() * outRadius
-	elif (offset.length() < inRadius):
-		newPos = center + offset.normalized() * inRadius
-	
-	var newAng = (newPos - center).angle()
-	if newAng < 0:
-		newAng = PI + (PI + newAng)
-	currAng = newAng
-	var normalized_a = Vector2.ZERO
-	if beacon != null:
-		normalized_a = beacon.global_position.normalized()
+	if !main_menu:
+		if Input.is_action_pressed("primary") and !beaconed:
+			if ($AttackCD.is_stopped() and ammo >= 1):
+				attack()
+		if Input.is_action_pressed("secondary") and !beaconed:
+			if ($AttackCD.is_stopped() and anti_ammo >= 1):
+				attack2()
+		if Input.is_action_pressed("beacon") and $BeaconCD.is_stopped():
+			if !beaconed:
+				start_looping()
+				$GPUParticles2D.emitting = true
+				beaconed = true
+		elif Input.is_action_just_released("beacon"):
+			if beaconed:
+				beaconed = false
+				$GPUParticles2D.emitting = false
+				stop_looping.emit()
+				$BeaconCD.start(0.5)
 		
-	var normalized_b = global_position.normalized()
-	# Get the angle in radians
-	# Calculate the dot product
-	var dot_product = normalized_a.dot(normalized_b)
-	var angle_radians = acos(dot_product)
-	#print(angle_radians)
-	if (angle_radians >= 3 && angle_radians < PI + 0.14159 ):
-		#print("halfloop")
-		pass
-	
-	if (global_position != prevPos):
-		if (!$StopTimer.is_stopped()):
-			$StopTimer.stop()
-			#print("canceled timer")
-		else:
-			stopped = false
-			#print("moving")
-	elif ($StopTimer.is_stopped()):
-		$StopTimer.start(stoplen)
-		#print("start timer")
-	
-	prevPos = global_position
-	global_position = newPos
+		var newPos = get_global_mouse_position()
+
+		var offset = newPos - center
+
+		if (offset.length() > outRadius):
+			newPos = center + offset.normalized() * outRadius
+		elif (offset.length() < inRadius):
+			newPos = center + offset.normalized() * inRadius
+		
+		var newAng = (newPos - center).angle()
+		if newAng < 0:
+			newAng = PI + (PI + newAng)
+		currAng = newAng
+		var normalized_a = Vector2.ZERO
+		if beacon != null:
+			normalized_a = beacon.global_position.normalized()
+			
+		var normalized_b = global_position.normalized()
+		# Get the angle in radians
+		# Calculate the dot product
+		var dot_product = normalized_a.dot(normalized_b)
+		var angle_radians = acos(dot_product)
+		#print(angle_radians)
+		if (angle_radians >= 3 && angle_radians < PI + 0.14159 ):
+			#print("halfloop")
+			pass
+		
+		if (global_position != prevPos):
+			if (!$StopTimer.is_stopped()):
+				$StopTimer.stop()
+				#print("canceled timer")
+			else:
+				stopped = false
+				#print("moving")
+		elif ($StopTimer.is_stopped()):
+			$StopTimer.start(stoplen)
+			#print("start timer")
+		
+		prevPos = global_position
+		global_position = lerp(global_position, newPos, 0.5)
+		#global_position = newPos
+	else:
+		var angle = Time.get_ticks_msec() / 1000.0 * 1
+		var offset = Vector2(outRadius, 0).rotated(angle)
+		global_position = Vector2(0, 0) + offset
+		
 
 func attack():
 	var inRange = $AttackRange.get_overlapping_areas()
 	for area in range(inRange.size()):
 		if (inRange[area].has_method("destroy")):
 			inRange[area].destroy()
+			killed_rock.emit()
 	$AttackCD.start(attackcd)
 	$GPUParticles2D2.emitting = true
 	$primary.play()
@@ -112,6 +125,7 @@ func attack2():
 	for area in range(inRange.size()):
 		if (inRange[area].has_method("destroy")):
 			inRange[area].destroy()
+			killed_anti.emit()
 	$AttackCD.start(attackcd)
 	$GPUParticles2D3.emitting = true
 	$secondary.play(0)
@@ -144,8 +158,9 @@ func _on_player_area_entered(area: Area2D) -> void:
 		elif (area.is_in_group("antiwave") and anti_shield):
 			print("protected")
 		else:
-			$Health.damage(area.damage)
-			hurt.emit(area.damage)
+			if !invincible:
+				$Health.damage(area.damage)
+				hurt.emit(area.damage)
 		if (area.has_method("die")):
 			area.die()
 
@@ -187,3 +202,7 @@ func _on_main_scene_no_shield() -> void:
 	anti_shield = false
 	$Shield.visible = false
 	$Shield2.visible = false
+
+
+func _on_main_scene_invincible(boolean: Variant) -> void:
+	invincible = boolean

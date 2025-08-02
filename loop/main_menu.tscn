@@ -16,4 +16,15 @@ theme_override_font_sizes/font_size = 50
 text = "Play
 "
 
+[node name="Tutorial" type="Button" parent="."]
+offset_left = 440.0
+offset_top = 406.0
+offset_right = 648.0
+offset_bottom = 465.0
+theme_override_fonts/font = ExtResource("1_06t4h")
+theme_override_font_sizes/font_size = 50
+text = "Tutorial
+"
+
 [connection signal="pressed" from="Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Tutorial" to="." method="_on_tutorial_pressed"]
