@@ -48,9 +48,17 @@ var ccw_loops = 0
 
 
 func _ready() -> void:
+	$maintheme.play()
 	$AnimationPlayer2.play("down")
 
+func _process(delta: float) -> void:
+	if $Pointer != null:
+		$MainMenu.set_play_pos($Pointer.global_position)
+
 func play():
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	$UI.visible = true
+	$menunoise.play()
 	$MobSpawn.start()
 	$WaveTimer.start()
 	$Clock.start()
@@ -70,28 +78,35 @@ func play():
 
 
 func tutorial():
-	print(tutorial_stage)
 	if tutorial_stage == 0:
+		$UI.visible = true
+		$menunoise.play()
 		invincible.emit(true)
 		tutormode = true
 		tutorial_stage += 1
 	elif tutorial_stage == 1:
 		if cw_loops >= 10:
+			$menunoise.play()
 			tutorial_stage += 1
 	elif tutorial_stage == 2:
 		if killed_rocks >= 5:
+			$menunoise.play()
 			tutorial_stage += 1
 	elif tutorial_stage == 3:
 		if ccw_loops >= 10:
+			$menunoise.play()
 			tutorial_stage += 1
 	elif tutorial_stage == 4:
 		if killed_anti >= 5:
+			$menunoise.play()
 			tutorial_stage += 1
 	elif tutorial_stage == 5:
 		if blocked_solar >= 5:
+			$menunoise.play()
 			tutorial_stage += 1
 	elif tutorial_stage == 6:
 		if blocked_wave >= 5:
+			$menunoise.play()
 			tutorial_stage += 1
 	
 
@@ -171,7 +186,7 @@ func _on_beacon_player_enter() -> void:
 		$loop.play()
 		cw_loops += 1
 		if tutorial_stage == 1:
-			tutormessage.emit("Build Charge by pressing Spacebar.\nDo Clockwise loops around the planet to build charge.\nDo 10 Clockwise Loops\n" + str(cw_loops) + " / 10")
+			tutormessage.emit("Build Charge by pressing Spacebar.\nDo Clockwise loops around\nthe planet to build charge.\nDo 10 Clockwise Loops\n" + str(cw_loops) + " / 10")
 		update_combo.emit(combo)
 	elif(started and ccw and three_fourths):
 		#print("ccw loop")
@@ -186,7 +201,7 @@ func _on_beacon_player_enter() -> void:
 		$loop.play()
 		ccw_loops += 1
 		if tutorial_stage == 3:
-			tutormessage.emit("Do 10 Counter Clockwise Loops while holding SpaceBar.\nEach one builds anti-charge.\n" + str(ccw_loops) + " / 10")
+			tutormessage.emit("Do 10 Counter Clockwise Loops\nwhile holding SpaceBar.\nEach one builds anti-charge.\n" + str(ccw_loops) + " / 10")
 		update_combo.emit(combo)
 	elif (started and (cw or ccw) and !three_fourths):
 		#print("started then went backwards")
@@ -281,7 +296,8 @@ func _on_base_protected() -> void:
 
 
 func _on_base_game_over() -> void:
-	pass # Replace with function body.
+	$AnimationPlayer3.play("boom")
+	$boom.play()
 
 
 func _on_pointer_death(position: Variant) -> void:
@@ -293,10 +309,12 @@ func _on_pointer_death(position: Variant) -> void:
 
 func _on_pointer_hurt(amount: Variant) -> void:
 	createScoreLabel(amount, $Pointer.global_position, 2)
+	$UI.lower_moon_health(amount)
 
 
 func _on_base_hurt(amount: Variant) -> void:
 	createScoreLabel(amount, $Base.global_position, 2)
+	$UI.lower_base_health(amount)
 
 
 func _on_pointer_killed_rock() -> void:
@@ -318,20 +336,20 @@ func _on_base_blocked_solar() -> void:
 
 
 func _on_base_blocked_wave() -> void:
-	if tutorial_stage == 6:
-		tutormessage.emit("Block 5 Anti-Matter Waves.\nCreate an Anti-Matter Shield\nby doing at least two Counter Clockwise Loops\nin a row while charging\n" + str(blocked_wave) + " / 5")
 	blocked_wave += 1
+	if tutorial_stage == 6:
+		tutormessage.emit("Block 5 Anti-Matter Waves.\nCreate an Anti-Matter Shield\nby doing at least\ntwo Counter Clockwise Loops\nin a row while charging\n" + str(blocked_wave) + " / 5")
 
 
 func _on_tutorial_clock_timeout() -> void:
 	tutorial()
 	if tutorial_stage == 1:
-		tutormessage.emit("Build Charge by pressing Spacebar.\nDo Clockwise loops around the planet to build charge.\nDo 10 Clockwise Loops\n" + str(cw_loops) + " / 10")
+		tutormessage.emit("Build Charge by pressing Spacebar.\nDo Clockwise loops around\nthe planet to build charge.\nDo 10 Clockwise Loops\n" + str(cw_loops) + " / 10")
 	elif tutorial_stage == 2:
 		tutormessage.emit("Destroy 5 Asteroids.\nLeft click to do a blast.\nTakes one charge\nCan't do it while building charge\n" + str(killed_rocks) + " / 5")
 		spawn(1)
 	elif tutorial_stage == 3:
-		tutormessage.emit("Do 10 Counter Clockwise Loops while holding SpaceBar.\nEach one builds anti-charge.\n" + str(ccw_loops) + " / 10")
+		tutormessage.emit("Do 10 Counter Clockwise Loops\nwhile holding SpaceBar.\nEach one builds anti-charge.\n" + str(ccw_loops) + " / 10")
 	elif tutorial_stage == 4:
 		tutormessage.emit("Destroy 5 Anti-Matter Clusters.\nRight click to do an anti-blast\n" + str(killed_anti) + " / 5")
 		spawn(2)
@@ -340,17 +358,18 @@ func _on_tutorial_clock_timeout() -> void:
 		$solarflare.play(5.0)
 		$AnimationPlayer.play("solar_flare")
 	elif tutorial_stage == 6:
-		tutormessage.emit("Block 5 Anti-Matter Waves.\nCreate an Anti-Matter Shield\nby doing at least two Counter Clockwise Loops\nin a row while charging\n" + str(blocked_wave) + " / 5")
+		tutormessage.emit("Block 5 Anti-Matter Waves.\nCreate an Anti-Matter Shield\nby doing at least\ntwo Counter Clockwise Loops\nin a row while charging\n" + str(blocked_wave) + " / 5")
 		$antiwave.play()
 		$AnimationPlayer.play("anti_wave")
 	if tutorial_stage != 7:
 		$TutorialClock.start()
 	else:
 		tutormessage.emit("Congraduation on completing the tutorial")
-		get_tree().create_timer(2).timeout.connect(func():
+		get_tree().create_timer(3).timeout.connect(func():
 			tutormessage.emit("Good Luck defending the Planet")
+			$goodluck.play()
 		)
-		get_tree().create_timer(4).timeout.connect(func():
+		get_tree().create_timer(6).timeout.connect(func():
 			tutormessage.emit("")
 			invincible.emit(false)
 			play()
@@ -359,4 +378,19 @@ func _on_tutorial_clock_timeout() -> void:
 
 func _on_main_menu_tutor() -> void:
 	tutorial()
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	$TutorialClock.start()
+
+
+func _on_animation_player_3_animation_finished(anim_name: StringName) -> void:
+	get_tree().create_timer(1).timeout.connect(func():
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		$Gameover.add_year(year)
+		$Gameover.set_score(score)
+		$Gameover.active_now()
+		$Gameover
+		)
+
+
+func _on_maintheme_finished() -> void:
+	$maintheme.play()

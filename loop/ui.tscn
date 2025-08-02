@@ -1,71 +1,75 @@
-[gd_scene load_steps=5 format=3 uid="uid://brbns00kia1i"]
+[gd_scene load_steps=9 format=3 uid="uid://brbns00kia1i"]
 
 [ext_resource type="Script" uid="uid://qlsn6qqfu1ws" path="res://ui.gd" id="1_fyqef"]
 [ext_resource type="FontFile" uid="uid://ca5aw5fu27nhe" path="res://art/Pixelme.ttf" id="2_27fn8"]
 [ext_resource type="Texture2D" uid="uid://bmflwljehvevl" path="res://art/shield.png" id="2_m6e0p"]
 [ext_resource type="AudioStream" uid="uid://d0cfbqusbiv0" path="res://soundfx/mob1_shot_sound.wav" id="4_nltto"]
 
-[node name="UI" type="Control"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nltto"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ibotj"]
+bg_color = Color(0.643137, 0, 0, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n5ude"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y4yjw"]
+bg_color = Color(0.643137, 0, 0, 1)
+
+[node name="UI" type="CanvasLayer"]
 process_mode = 3
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 11.0
-offset_right = 11.0
-grow_horizontal = 2
-grow_vertical = 2
 script = ExtResource("1_fyqef")
 
 [node name="Charge" type="Label" parent="."]
-layout_mode = 0
+texture_filter = 1
 offset_left = 20.0
-offset_top = 598.0
+offset_top = 580.0
 offset_right = 66.0
-offset_bottom = 621.0
+offset_bottom = 603.0
 theme_override_fonts/font = ExtResource("2_27fn8")
 text = "0 / 10"
 
 [node name="AntiCharge" type="Label" parent="."]
-layout_mode = 0
-offset_left = 1069.0
-offset_top = 588.0
-offset_right = 1115.0
-offset_bottom = 611.0
+texture_filter = 1
+offset_left = 1089.0
+offset_top = 580.0
+offset_right = 1135.0
+offset_bottom = 603.0
 theme_override_fonts/font = ExtResource("2_27fn8")
 text = "0 / 10"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Year" type="Label" parent="."]
-layout_mode = 0
-offset_left = 518.0
+texture_filter = 1
 offset_top = 28.0
-offset_right = 598.0
+offset_right = 1152.0
 offset_bottom = 51.0
 theme_override_fonts/font = ExtResource("2_27fn8")
 text = "YEAR 2050"
+horizontal_alignment = 1
 
 [node name="Shield" type="Sprite2D" parent="."]
+visible = false
 self_modulate = Color(1, 1, 1, 0.0784314)
 texture_filter = 1
-position = Vector2(42, 605)
+position = Vector2(43, 586)
 texture = ExtResource("2_m6e0p")
 
 [node name="AntiShield" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)
 self_modulate = Color(1, 1, 1, 0.0784314)
 texture_filter = 1
-position = Vector2(1090, 594)
+position = Vector2(1111, 588)
 texture = ExtResource("2_m6e0p")
 
 [node name="Warning" type="Label" parent="."]
-layout_mode = 0
-offset_left = 456.0
-offset_top = 80.0
-offset_right = 659.0
-offset_bottom = 149.0
+texture_filter = 1
+offset_top = 82.0
+offset_right = 1152.0
+offset_bottom = 151.0
 theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_27fn8")
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 25
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -73,21 +77,20 @@ vertical_alignment = 1
 one_shot = true
 
 [node name="Score" type="Label" parent="."]
-layout_mode = 0
-offset_left = 539.0
-offset_top = 539.0
-offset_right = 579.0
-offset_bottom = 562.0
+texture_filter = 1
+offset_top = 540.0
+offset_right = 1152.0
+offset_bottom = 563.0
 theme_override_fonts/font = ExtResource("2_27fn8")
 text = "0"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LoopCombo" type="Label" parent="."]
-layout_mode = 0
-offset_left = 416.0
-offset_top = 597.0
-offset_right = 652.0
-offset_bottom = 620.0
+texture_filter = 1
+offset_top = 580.0
+offset_right = 1152.0
+offset_bottom = 603.0
 theme_override_fonts/font = ExtResource("2_27fn8")
 horizontal_alignment = 1
 
@@ -96,7 +99,7 @@ stream = ExtResource("4_nltto")
 
 [node name="Paused" type="Label" parent="."]
 visible = false
-layout_mode = 0
+texture_filter = 1
 offset_left = 430.0
 offset_top = 270.0
 offset_right = 684.0
@@ -106,13 +109,56 @@ theme_override_font_sizes/font_size = 70
 text = "PAUSED"
 
 [node name="TutorialMessage" type="Label" parent="."]
-layout_mode = 0
-offset_left = 64.0
-offset_top = 155.0
-offset_right = 264.0
-offset_bottom = 178.0
+texture_filter = 1
+offset_left = 124.0
+offset_top = 176.0
+offset_right = 324.0
+offset_bottom = 199.0
 theme_override_fonts/font = ExtResource("2_27fn8")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 15
 horizontal_alignment = 1
+
+[node name="BaseHealth" type="ProgressBar" parent="."]
+offset_left = 30.0
+offset_top = 500.0
+offset_right = 430.0
+offset_bottom = 520.0
+rotation = 4.71239
+theme_override_styles/background = SubResource("StyleBoxEmpty_nltto")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ibotj")
+value = 100.0
+show_percentage = false
+
+[node name="MoonHealth" type="ProgressBar" parent="."]
+offset_left = 1102.0
+offset_top = 500.0
+offset_right = 1502.0
+offset_bottom = 520.0
+rotation = 4.71239
+theme_override_styles/background = SubResource("StyleBoxEmpty_n5ude")
+theme_override_styles/fill = SubResource("StyleBoxFlat_y4yjw")
+max_value = 50.0
+value = 50.0
+show_percentage = false
+
+[node name="Planet" type="Label" parent="."]
+texture_filter = 1
+offset_left = 62.0
+offset_top = 327.0
+offset_right = 120.0
+offset_bottom = 350.0
+rotation = 4.71239
+theme_override_fonts/font = ExtResource("2_27fn8")
+text = "PLANET"
+
+[node name="Moon" type="Label" parent="."]
+texture_filter = 1
+offset_left = 1088.0
+offset_top = 273.0
+offset_right = 1130.0
+offset_bottom = 296.0
+rotation = 1.5708
+theme_override_fonts/font = ExtResource("2_27fn8")
+text = "MOON"
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

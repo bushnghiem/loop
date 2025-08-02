@@ -19,7 +19,7 @@ func _process(delta: float) -> void:
 func destroy():
 	$CollisionShape2D.disabled
 	$AnimationPlayer.play("death")
-	velocity = velocity * randf_range(-2, 0)
+	velocity = velocity * randf_range(-4, -2)
 	rotation_speed = rotation_speed * randf_range(-4, 4)
 
 func die():

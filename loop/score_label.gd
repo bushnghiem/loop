@@ -25,6 +25,7 @@ func setup(score, type):
 		modulate.g = 0
 		text = "-" + str(snapped(score, 1))
 	scale = Vector2(1 + (score / size_scale), 1 + (score / size_scale))
+	scale.clampf(1.0, 10.0)
 
 func _on_gone_timeout() -> void:
 	queue_free()

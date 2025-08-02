@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://dj0urxok8lh5r"]
+[gd_scene load_steps=38 format=3 uid="uid://dj0urxok8lh5r"]
 
 [ext_resource type="PackedScene" uid="uid://b5xppvpvg5ww" path="res://pointer.tscn" id="1_0f027"]
 [ext_resource type="Script" uid="uid://bj5uakwxosvv0" path="res://main_scene.gd" id="1_gyfs4"]
@@ -20,6 +20,12 @@
 [ext_resource type="AudioStream" uid="uid://cjyo1uvphwu0g" path="res://soundfx/player_death_sound.wav" id="18_7th4q"]
 [ext_resource type="AudioStream" uid="uid://blcjvx5ssu7m4" path="res://soundfx/mob_death.wav" id="19_6jybn"]
 [ext_resource type="PackedScene" uid="uid://n2jxb18o5g73" path="res://main_menu.tscn" id="20_84odl"]
+[ext_resource type="AudioStream" uid="uid://bn1mr2vm113q8" path="res://soundfx/goodluck.wav" id="20_ak604"]
+[ext_resource type="AudioStream" uid="uid://b8h84sx8ld1f7" path="res://soundfx/medium-explosion-40472.wav" id="21_ghshe"]
+[ext_resource type="AudioStream" uid="uid://d0cfbqusbiv0" path="res://soundfx/mob1_shot_sound.wav" id="22_5smuj"]
+[ext_resource type="Texture2D" uid="uid://df4emgpea3pfc" path="res://art/explosion-Sheet.png" id="22_vimvf"]
+[ext_resource type="PackedScene" uid="uid://ccbp75cpnsv6o" path="res://game_over.tscn" id="24_fv2he"]
+[ext_resource type="AudioStream" uid="uid://tpsv46r6rqci" path="res://soundfx/level_theme.wav" id="26_y5ved"]
 
 [sub_resource type="Curve2D" id="Curve2D_hq1ik"]
 _data = {
@@ -153,6 +159,67 @@ _data = {
 &"down": SubResource("Animation_6jybn")
 }
 
+[sub_resource type="Animation" id="Animation_5smuj"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("blowup:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("blowup:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_fv2he"]
+resource_name = "boom"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("blowup:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("blowup:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_y5ved"]
+_data = {
+&"RESET": SubResource("Animation_5smuj"),
+&"boom": SubResource("Animation_fv2he")
+}
+
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_gyfs4")
 rock = ExtResource("5_8mm7a")
@@ -233,10 +300,7 @@ libraries = {
 position = Vector2(-8, -704)
 
 [node name="UI" parent="." instance=ExtResource("12_671wp")]
-offset_left = -576.0
-offset_top = -324.0
-offset_right = -576.0
-offset_bottom = -324.0
+visible = false
 
 [node name="loop" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("14_42l1d")
@@ -249,10 +313,19 @@ stream = ExtResource("15_2jcla")
 stream = ExtResource("16_m35m6")
 
 [node name="moondeath" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("18_7th4q")
+stream = ExtResource("21_ghshe")
 
 [node name="hit" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("19_6jybn")
+
+[node name="goodluck" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("20_ak604")
+
+[node name="boom" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("18_7th4q")
+
+[node name="menunoise" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("22_5smuj")
 
 [node name="AnimationPlayer2" type="AnimationPlayer" parent="."]
 libraries = {
@@ -260,10 +333,33 @@ libraries = {
 }
 
 [node name="MainMenu" parent="." instance=ExtResource("20_84odl")]
+offset_left = -576.0
+offset_top = -324.0
+offset_right = -576.0
+offset_bottom = -324.0
 
 [node name="TutorialClock" type="Timer" parent="."]
 wait_time = 2.0
 one_shot = true
+
+[node name="blowup" type="Sprite2D" parent="."]
+visible = false
+texture_filter = 1
+scale = Vector2(8, 8)
+texture = ExtResource("22_vimvf")
+hframes = 8
+
+[node name="AnimationPlayer3" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_y5ved")
+}
+
+[node name="Gameover" parent="." instance=ExtResource("24_fv2he")]
+visible = false
+
+[node name="maintheme" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("26_y5ved")
+volume_db = -10.0
 
 [connection signal="antiWaveWarning" from="." to="UI" method="antiWaveWarning"]
 [connection signal="anti_shield" from="." to="Pointer" method="_on_main_scene_anti_shield"]
@@ -283,8 +379,8 @@ one_shot = true
 [connection signal="update_year" from="." to="UI" method="_on_main_scene_update_year"]
 [connection signal="ammo_update" from="Pointer" to="UI" method="_on_pointer_ammo_update"]
 [connection signal="death" from="Pointer" to="." method="_on_pointer_death"]
-[connection signal="hurt" from="Pointer" to="." method="_on_pointer_hurt"]
 [connection signal="hurt" from="Pointer" to="." method="_hurt"]
+[connection signal="hurt" from="Pointer" to="." method="_on_pointer_hurt"]
 [connection signal="killed_anti" from="Pointer" to="." method="_on_pointer_killed_anti"]
 [connection signal="killed_rock" from="Pointer" to="." method="_on_pointer_killed_rock"]
 [connection signal="loopstart" from="Pointer" to="." method="_on_pointer_loopstart"]
@@ -292,8 +388,9 @@ one_shot = true
 [connection signal="blocked_solar" from="Base" to="." method="_on_base_blocked_solar"]
 [connection signal="blocked_wave" from="Base" to="." method="_on_base_blocked_wave"]
 [connection signal="game_over" from="Base" to="." method="_on_base_game_over"]
-[connection signal="hurt" from="Base" to="." method="_on_base_hurt"]
+[connection signal="game_over" from="Base" to="UI" method="_on_base_game_over"]
 [connection signal="hurt" from="Base" to="." method="_hurt"]
+[connection signal="hurt" from="Base" to="." method="_on_base_hurt"]
 [connection signal="protected" from="Base" to="." method="_on_base_protected"]
 [connection signal="shields_update" from="Base" to="UI" method="_on_base_shields_update"]
 [connection signal="player_enter" from="Beacon" to="." method="_on_beacon_player_enter"]
@@ -312,3 +409,5 @@ one_shot = true
 [connection signal="tutor" from="MainMenu" to="." method="_on_main_menu_tutor"]
 [connection signal="tutor" from="MainMenu" to="Pointer" method="play"]
 [connection signal="timeout" from="TutorialClock" to="." method="_on_tutorial_clock_timeout"]
+[connection signal="animation_finished" from="AnimationPlayer3" to="." method="_on_animation_player_3_animation_finished"]
+[connection signal="finished" from="maintheme" to="." method="_on_maintheme_finished"]

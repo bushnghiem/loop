@@ -7,6 +7,7 @@
 radius = 36.0555
 
 [node name="Detector" type="Node2D"]
+visible = false
 scale = Vector2(0.7, 0.7)
 script = ExtResource("1_btphw")
 

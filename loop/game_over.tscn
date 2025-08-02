@@ -1,0 +1,78 @@
+[gd_scene load_steps=7 format=3 uid="uid://ccbp75cpnsv6o"]
+
+[ext_resource type="Texture2D" uid="uid://t5hs6ymp2efb" path="res://art/bg_01.png" id="1_y26ei"]
+[ext_resource type="Script" uid="uid://c015g087vrnao" path="res://game_over.gd" id="1_yxx3c"]
+[ext_resource type="FontFile" uid="uid://ca5aw5fu27nhe" path="res://art/Pixelme.ttf" id="3_8u835"]
+[ext_resource type="AudioStream" uid="uid://d0cfbqusbiv0" path="res://soundfx/mob1_shot_sound.wav" id="3_ccer4"]
+[ext_resource type="AudioStream" uid="uid://dvtghw76hqpc" path="res://soundfx/gameover_theme.wav" id="4_ftari"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8u835"]
+
+[node name="Gameover" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_yxx3c")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0, 0, 0, 1)
+texture_filter = 1
+position = Vector2(562, 309)
+scale = Vector2(2.11247, 1)
+texture = ExtResource("1_y26ei")
+
+[node name="DeathMessage" type="Label" parent="."]
+texture_filter = 1
+offset_left = -1.0
+offset_top = 73.0
+offset_right = 1151.0
+offset_bottom = 124.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_8u835")
+theme_override_font_sizes/font_size = 50
+horizontal_alignment = 1
+
+[node name="Score" type="Label" parent="."]
+visible = false
+texture_filter = 1
+offset_top = 164.0
+offset_right = 1125.0
+offset_bottom = 215.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_8u835")
+theme_override_font_sizes/font_size = 50
+horizontal_alignment = 1
+
+[node name="ResetButton" type="Button" parent="."]
+visible = false
+texture_filter = 1
+offset_left = 477.0
+offset_top = 296.0
+offset_right = 635.0
+offset_bottom = 355.0
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_8u835")
+theme_override_font_sizes/font_size = 50
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8u835")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_8u835")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_8u835")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_8u835")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_8u835")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_8u835")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_8u835")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_8u835")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_8u835")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_8u835")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_8u835")
+disabled = true
+text = "RESET"
+
+[node name="deathsong" type="AudioStreamPlayer" parent="ResetButton"]
+stream = ExtResource("4_ftari")
+volume_db = -10.0
+
+[node name="menunoise" type="AudioStreamPlayer" parent="ResetButton"]
+stream = ExtResource("3_ccer4")
+
+[connection signal="pressed" from="ResetButton" to="." method="_on_reset_button_pressed"]

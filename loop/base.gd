@@ -32,7 +32,7 @@ func _on_area_entered(area: Area2D) -> void:
 
 
 func _on_health_zero_health() -> void:
-	
+	queue_free()
 	game_over.emit()
 
 
