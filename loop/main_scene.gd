@@ -24,13 +24,32 @@ var year : float = 2050
 var score : float = 0
 var scoreMulti : float = 1.0
 var shield_score : float = 50
+var modifier_count : int = 0
+var modifier_threshold : int = 10
+var spawn_time : float = 2.0
+var wave_time_min : float = 10
+var wave_time_max : float = 30
 
 @export var rock: PackedScene
 @export var antimatter: PackedScene
 @export var scoreLabel: PackedScene
+@export var deathParticle: PackedScene
+
+
 
 func _ready() -> void:
-	spawn(1)
+	$AnimationPlayer2.play("down")
+
+func play():
+	$MobSpawn.start()
+	$WaveTimer.start()
+	$Clock.start()
+	no_shield.emit()
+	combo = 0
+	update_combo.emit(combo)
+	$ShieldOff.stop()
+	$LoopCombo.stop()
+	
 
 func spawn(type):
 	# Create a new instance of the Mob scene.
@@ -136,6 +155,7 @@ func _on_beacon_player_leave() -> void:
 
 func _on_mob_spawn_timeout() -> void:
 	spawn(randi_range(1, 2))
+	$MobSpawn.start(spawn_time)
 
 
 func _on_pointer_stop_looping() -> void:
@@ -159,7 +179,7 @@ func _on_wave_time_timeout() -> void:
 	elif (rand_type == 2):
 		antiWaveWarning.emit()
 		$AntiWaveTimer.start()
-	var rand_time = randi_range(10, 30)
+	var rand_time = randi_range(wave_time_min, wave_time_max)
 	$WaveTimer.start(rand_time)
 
 
@@ -168,32 +188,62 @@ func _on_shield_off_timeout() -> void:
 
 
 func _hurt(amount: Variant) -> void:
+	$hit.play()
 	$Camera2D.apply_shake(amount)
 
 
 func _on_clock_timeout() -> void:
 	year += 5
 	update_year.emit(year)
+	modifier_count += 1
+	modifier_count = modifier_count % modifier_threshold
+	if modifier_count == 0:
+		spawn_time = spawn_time * 0.9
+		wave_time_min = wave_time_min * 0.9
+		wave_time_max = wave_time_max * 0.9
+		scoreMulti += 1
+		print("next level")
 
 
 func _on_solar_timer_timeout() -> void:
+	$solarflare.play(5.0)
 	$AnimationPlayer.play("solar_flare")
 
 
 func _on_anti_wave_timer_timeout() -> void:
+	$antiwave.play()
 	$AnimationPlayer.play("anti_wave")
 
 func enemyDeath(_score, _position):
 	score += _score * scoreMulti * (combo + 1)
 	update_score.emit(score)
-	createScoreLabel(_score * scoreMulti * (combo + 1), _position)
+	createScoreLabel(_score * scoreMulti * (combo + 1), _position, 1)
 
-func createScoreLabel(_score, _position):
+func createScoreLabel(_score, _position, type):
 	var newScore = scoreLabel.instantiate()
-	newScore.setup(_score)
+	newScore.setup(_score, type)
 	newScore.global_position = _position
 	add_child(newScore)
 
 func _on_base_protected() -> void:
 	score += shield_score * scoreMulti * (combo + 1)
 	update_score.emit(score)
+
+
+func _on_base_game_over() -> void:
+	pass # Replace with function body.
+
+
+func _on_pointer_death(position: Variant) -> void:
+	$moondeath.play()
+	var particle = deathParticle.instantiate()
+	particle.global_position = position
+	add_child(particle)
+
+
+func _on_pointer_hurt(amount: Variant) -> void:
+	createScoreLabel(amount, $Pointer.global_position, 2)
+
+
+func _on_base_hurt(amount: Variant) -> void:
+	createScoreLabel(amount, $Base.global_position, 2)

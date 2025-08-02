@@ -2,10 +2,18 @@ extends Control
 var count = 0
 var warning_text = ""
 
+func _input(event):
+	if Input.is_action_just_pressed("pause"):
+		if !get_tree().paused:
+			get_tree().paused = true
+			$Paused.visible = true
+		else:
+			get_tree().paused = false
+			$Paused.visible = false
 
 func _ready() -> void:
-	print($Charge.text)
-	print($AntiCharge.text)
+	pass
+
 
 func _on_pointer_ammo_update(ammo: Variant, antiammo: Variant) -> void:
 	$Charge.set_text(str(ammo) + " / 10")
@@ -20,13 +28,13 @@ func _on_base_shields_update(shield: Variant, antishield: Variant) -> void:
 	$AntiShield.visible = antishield
 
 func solarWarning():
-	print("solar warn")
+	#print("solar warn")
 	warning_text = "Solar Flare In \n"
 	count = 3
 	$Timer.start()
 
 func antiWaveWarning():
-	print("anti warn")
+	#print("anti warn")
 	warning_text = "Anti-Matter Wave In \n"
 	count = 3
 	$Timer.start()
@@ -36,10 +44,10 @@ func _on_timer_timeout() -> void:
 	if count > 0:
 		$Warning.text = warning_text + str(count)
 		count -=1
+		$Count.play()
 		$Timer.start()
 	else:
 		$Warning.text = ""
-	
 
 
 func _on_main_scene_update_score(_score: Variant) -> void:

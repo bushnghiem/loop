@@ -19,6 +19,7 @@ func _process(delta: float) -> void:
 	global_position = global_position + velocity * delta
 
 func destroy():
+	$CollisionShape2D.disabled
 	$AnimationPlayer.play("death")
 	velocity = velocity * randf_range(-2, 0)
 	rotation_speed = rotation_speed * randf_range(-4, 4)

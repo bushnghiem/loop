@@ -1,10 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://3aeehou41eig"]
+[gd_scene load_steps=3 format=3 uid="uid://3aeehou41eig"]
 
+[ext_resource type="FontFile" uid="uid://ca5aw5fu27nhe" path="res://art/Pixelme.ttf" id="1_j182h"]
 [ext_resource type="Script" uid="uid://bj7utatdgy64k" path="res://score_label.gd" id="1_uhy7g"]
 
 [node name="ScoreLabel" type="Label"]
+modulate = Color(1, 0, 0, 1)
+texture_filter = 1
 offset_right = 40.0
 offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("1_j182h")
 script = ExtResource("1_uhy7g")
 
 [node name="Gone" type="Timer" parent="."]

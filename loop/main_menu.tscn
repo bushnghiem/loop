@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://n2jxb18o5g73"]
+
+[ext_resource type="FontFile" uid="uid://ca5aw5fu27nhe" path="res://art/Pixelme.ttf" id="1_06t4h"]
+[ext_resource type="Script" uid="uid://baxxhflx5s8ea" path="res://main_menu.gd" id="1_7vrkn"]
+
+[node name="MainMenu" type="CanvasLayer"]
+script = ExtResource("1_7vrkn")
+
+[node name="Play" type="Button" parent="."]
+offset_left = 492.0
+offset_top = 299.0
+offset_right = 606.0
+offset_bottom = 358.0
+theme_override_fonts/font = ExtResource("1_06t4h")
+theme_override_font_sizes/font_size = 50
+text = "Play
+"
+
+[connection signal="pressed" from="Play" to="." method="_on_play_pressed"]

@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dii6nwyt2yme8" path="res://health.tscn" id="3_asalp"]
 [ext_resource type="Texture2D" uid="uid://de1b8qhbwqvry" path="res://art/shield-Sheet.png" id="4_d5mmh"]
 [ext_resource type="AudioStream" uid="uid://djicr6ssr0knq" path="res://soundfx/blow-into-microphone-001-11346.mp3" id="6_qunp4"]
-[ext_resource type="AudioStream" uid="uid://diuxqncque57v" path="res://soundfx/elemental-magic-spell-impact-incoming-228343.mp3" id="7_a1g42"]
+[ext_resource type="AudioStream" uid="uid://cibb81pb1g01x" path="res://soundfx/mob3_shot_sound.wav" id="7_a1g42"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_p82c6"]
 radius = 61.0328
@@ -76,6 +76,7 @@ _data = {
 }
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rvxbq"]
+lifetime_randomness = 0.5
 particle_flag_disable_z = true
 angular_velocity_min = -256.55
 angular_velocity_max = -66.2
@@ -95,6 +96,7 @@ point_count = 4
 curve = SubResource("Curve_rvxbq")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qunp4"]
+lifetime_randomness = 0.5
 particle_flag_disable_z = true
 angular_velocity_min = 720.0
 angular_velocity_max = 720.0
@@ -108,7 +110,7 @@ radial_accel_min = -100.0
 radial_accel_max = 100.0
 tangential_accel_min = -100.0
 tangential_accel_max = 100.0
-scale_min = 5.0
+scale_min = 2.0
 scale_max = 10.0
 
 [sub_resource type="Curve" id="Curve_qunp4"]
@@ -119,6 +121,7 @@ point_count = 2
 curve = SubResource("Curve_qunp4")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_a1g42"]
+lifetime_randomness = 0.5
 particle_flag_disable_z = true
 angular_velocity_min = 720.0
 angular_velocity_max = 720.0
@@ -132,7 +135,7 @@ radial_accel_min = -100.0
 radial_accel_max = 100.0
 tangential_accel_min = -100.0
 tangential_accel_max = 100.0
-scale_min = 5.0
+scale_min = 2.0
 scale_max = 10.0
 color = Color(0.631373, 0, 1, 1)
 
@@ -226,6 +229,7 @@ process_material = SubResource("ParticleProcessMaterial_a1g42")
 
 [node name="primary" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_qunp4")
+volume_db = -10.0
 
 [node name="secondary" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_a1g42")

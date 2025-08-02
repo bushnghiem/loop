@@ -4,6 +4,7 @@ var anti_shield : bool = false
 signal hurt(amount)
 signal shields_update(shield, antishield)
 signal protected
+signal game_over
 
 func _ready() -> void:
 	$AnimationPlayer.play("spin")
@@ -29,7 +30,8 @@ func _on_area_entered(area: Area2D) -> void:
 
 
 func _on_health_zero_health() -> void:
-	print("lose")
+	
+	game_over.emit()
 
 
 func _on_main_scene_shield() -> void:

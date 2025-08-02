@@ -24,10 +24,15 @@ signal full_charge
 signal anti_full
 signal stop_looping
 signal hurt(amount)
+signal death(position)
 
 func _ready() -> void:
-	
 	$AnimationPlayer2.play("shield")
+
+func play():
+	ammo = 0
+	anti_ammo = 0
+	ammo_update.emit(ammo, anti_ammo)
 
 func _process(delta: float) -> void:
 	if Input.is_action_pressed("primary") and !beaconed:
@@ -72,7 +77,8 @@ func _process(delta: float) -> void:
 	var angle_radians = acos(dot_product)
 	#print(angle_radians)
 	if (angle_radians >= 3 && angle_radians < PI + 0.14159 ):
-		print("halfloop")
+		#print("halfloop")
+		pass
 	
 	if (global_position != prevPos):
 		if (!$StopTimer.is_stopped()):
@@ -97,7 +103,7 @@ func attack():
 	$GPUParticles2D2.emitting = true
 	$primary.play()
 	$Timer.start(0.1)
-	$Sprite2D2.visible = true
+
 	ammo -= 1
 	ammo_update.emit(ammo, anti_ammo)
 
@@ -108,9 +114,9 @@ func attack2():
 			inRange[area].destroy()
 	$AttackCD.start(attackcd)
 	$GPUParticles2D3.emitting = true
-	$secondary.play()
+	$secondary.play(0)
 	$Timer.start(0.1)
-	$Sprite2D2.visible = true
+
 	anti_ammo -= 1
 	ammo_update.emit(ammo, anti_ammo)
 
@@ -135,12 +141,8 @@ func _on_player_area_entered(area: Area2D) -> void:
 	if (area.is_in_group("enemy")):
 		if (area.is_in_group("solar") and shield):
 			print("protected")
-			shield = false
-			$Shield.visible = false
 		elif (area.is_in_group("antiwave") and anti_shield):
 			print("protected")
-			anti_shield = false
-			$Shield2.visible = false
 		else:
 			$Health.damage(area.damage)
 			hurt.emit(area.damage)
@@ -149,7 +151,8 @@ func _on_player_area_entered(area: Area2D) -> void:
 
 
 func _on_health_zero_health() -> void:
-	print("protector death")
+	death.emit(global_position)
+	queue_free()
 
 
 func _on_attack_cd_timeout() -> void:
@@ -157,7 +160,6 @@ func _on_attack_cd_timeout() -> void:
 
 
 func _on_timer_timeout() -> void:
-	$Sprite2D2.visible = false
 	$GPUParticles2D2.emitting = false
 	$GPUParticles2D3.emitting = false
 
