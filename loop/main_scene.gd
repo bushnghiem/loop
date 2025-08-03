@@ -58,6 +58,7 @@ func _process(delta: float) -> void:
 		$MainMenu.set_play_pos($Pointer.global_position)
 
 func play():
+	$UI.pausable = true
 	spawn(4)
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	$UI.visible = true
@@ -386,6 +387,7 @@ func _on_tutorial_clock_timeout() -> void:
 
 func _on_main_menu_tutor() -> void:
 	tutorial()
+	$UI.pausable = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	$TutorialClock.start()
 

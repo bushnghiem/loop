@@ -56,6 +56,7 @@ position = Vector2(43, 586)
 texture = ExtResource("2_m6e0p")
 
 [node name="AntiShield" type="Sprite2D" parent="."]
+visible = false
 modulate = Color(1, 0, 1, 1)
 self_modulate = Color(1, 1, 1, 0.0784314)
 texture_filter = 1
@@ -100,13 +101,13 @@ stream = ExtResource("4_nltto")
 [node name="Paused" type="Label" parent="."]
 visible = false
 texture_filter = 1
-offset_left = 430.0
 offset_top = 270.0
-offset_right = 684.0
+offset_right = 1152.0
 offset_bottom = 341.0
 theme_override_fonts/font = ExtResource("2_27fn8")
 theme_override_font_sizes/font_size = 70
 text = "PAUSED"
+horizontal_alignment = 1
 
 [node name="TutorialMessage" type="Label" parent="."]
 texture_filter = 1

@@ -1,7 +1,7 @@
 extends CanvasLayer
 var count = 0
 var warning_text = ""
-var pausable = true
+var pausable = false
 
 func _input(event):
 	if pausable:
