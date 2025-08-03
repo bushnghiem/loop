@@ -324,6 +324,7 @@ stream = ExtResource("19_6jybn")
 
 [node name="goodluck" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("20_ak604")
+volume_db = 5.0
 
 [node name="boom" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("18_7th4q")

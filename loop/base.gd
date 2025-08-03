@@ -17,10 +17,12 @@ func _on_area_entered(area: Area2D) -> void:
 	if (area.is_in_group("enemy")):
 		if (area.is_in_group("solar") and shield):
 			blocked_solar.emit()
+			$block.play()
 			protected.emit()
 			shields_update.emit(shield, anti_shield)
 		elif (area.is_in_group("antiwave") and anti_shield):
 			blocked_wave.emit()
+			$block.play()
 			protected.emit()
 			shields_update.emit(shield, anti_shield)
 		else:

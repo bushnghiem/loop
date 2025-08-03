@@ -95,6 +95,7 @@ func tutorial():
 		if killed_rocks >= 5:
 			$menunoise.play()
 			tutorial_stage += 1
+			ccw_loops = 0
 	elif tutorial_stage == 3:
 		if ccw_loops >= 10:
 			$menunoise.play()
@@ -379,6 +380,7 @@ func _on_tutorial_clock_timeout() -> void:
 			tutormessage.emit("")
 			invincible.emit(false)
 			play()
+			$Pointer.play()
 		)
 
 

@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://duyj3kwvocu5y"]
+[gd_scene load_steps=13 format=3 uid="uid://duyj3kwvocu5y"]
 
 [ext_resource type="Script" uid="uid://mquukjxlmekk" path="res://base.gd" id="1_3vi8l"]
 [ext_resource type="Texture2D" uid="uid://bci0wsjofeuw" path="res://art/planet-Sheet.png" id="2_8rhti"]
 [ext_resource type="PackedScene" uid="uid://dii6nwyt2yme8" path="res://health.tscn" id="3_8rhti"]
 [ext_resource type="Texture2D" uid="uid://de1b8qhbwqvry" path="res://art/shield-Sheet.png" id="4_ohhpf"]
+[ext_resource type="AudioStream" uid="uid://dh6tqdh5rfvc5" path="res://soundfx/shield-guard-6963.wav" id="5_21bcp"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_3vi8l"]
 radius = 64.9384
@@ -151,6 +152,9 @@ hframes = 3
 libraries = {
 &"": SubResource("AnimationLibrary_42dj3")
 }
+
+[node name="block" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_21bcp")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="zero_health" from="Health" to="." method="_on_health_zero_health"]

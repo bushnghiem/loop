@@ -154,9 +154,11 @@ func _on_main_scene_loop() -> void:
 func _on_player_area_entered(area: Area2D) -> void:
 	if (area.is_in_group("enemy")):
 		if (area.is_in_group("solar") and shield):
-			print("protected")
+			#print("protected")
+			pass
 		elif (area.is_in_group("antiwave") and anti_shield):
-			print("protected")
+			#print("protected")
+			pass
 		else:
 			if !invincible:
 				$Health.damage(area.damage)
